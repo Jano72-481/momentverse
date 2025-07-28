@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  passwordHash  String   // bcrypt hashed password
+  emailVerified Boolean  @default(false)
+  emailVerificationToken String? @unique
+  passwordResetToken String? @unique
+  passwordResetExpires DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  moments Moment[]
+  orders  Order[]
+
+  @@map("users")
+}
+
+model Moment {
+  id            String   @id @default(cuid())
+  startTime     DateTime
+  endTime       DateTime
+  dedication    String?
+  isPublic      Boolean  @default(false)
+  userId        String
+  starId        String?
+  hasStarAddon  Boolean  @default(false)
+  hasPremiumCert Boolean @default(false)
+  certificateUrl String? // URL to generated PDF certificate
+  certificateGenerated Boolean @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  star  Star?   @relation(fields: [starId], references: [id])
+  order Order?
+
+  @@map("moments")
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  momentId        String   @unique
+  userId          String
+  stripeSessionId String   @unique
+  stripePaymentIntentId String?
+  amount          Int      // in cents
+  currency        String   @default("usd")
+  status          String   @default("PENDING") // PENDING, COMPLETED, FAILED, CANCELLED
+  hasStarAddon    Boolean  @default(false)
+  hasPremiumCert  Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  moment Moment @relation(fields: [momentId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("orders")
+}
+
+model Star {
+  id          String  @id @default(cuid())
+  hipparcosId Int     @unique
+  name        String
+  ra          Float   // Right Ascension in degrees
+  dec         Float   // Declination in degrees
+  mag         Float   // Magnitude
+  isAssigned  Boolean @default(false)
+
+  moments Moment[]
+
+  @@map("stars")
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  event     String   // page_view, form_fill, purchase, share, etc.
+  source    String?  // tiktok, organic, direct, etc.
+  userId    String?
+  sessionId String?
+  metadata  String?  // JSON string for additional data
+  createdAt DateTime @default(now())
+
+  @@map("analytics")
+} 
