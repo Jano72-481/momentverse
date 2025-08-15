@@ -277,10 +277,10 @@ export async function generateCertificate(data: CertificateData): Promise<Buffer
     await page.setContent(html)
     
     // Wait for animations to complete
-    await page.waitForTimeout(2000)
+    await new Promise(resolve => setTimeout(resolve, 2000))
     
     // Generate PDF
-    const pdf = await page.pdf({
+    const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
       margin: {
@@ -291,7 +291,7 @@ export async function generateCertificate(data: CertificateData): Promise<Buffer
       }
     })
 
-    return pdf
+    return Buffer.from(pdfBuffer)
   } finally {
     await browser.close()
   }
@@ -347,7 +347,8 @@ export async function generateAndSaveCertificate(momentId: string): Promise<stri
     // Assign star if needed
     let starName: string | undefined
     if (moment.hasStarAddon && !moment.starId) {
-      starName = await assignStarToMoment(momentId)
+      const assignedStar = await assignStarToMoment(momentId)
+      starName = assignedStar || undefined
     } else if (moment.star) {
       starName = moment.star.name
     }

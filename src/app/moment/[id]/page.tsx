@@ -1,13 +1,70 @@
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/db'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { Star, Clock, Download, Share2, Award, Calendar, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { formatPrice } from '@/lib/utils'
+import StarField from '@/components/StarField'
+import MomentActions from './MomentActions'
 
 interface MomentPageProps {
-  params: {
-    id: string
+  params: { id: string }
+}
+
+export async function generateMetadata({ params }: MomentPageProps): Promise<Metadata> {
+  try {
+    const moment = await prisma.moment.findUnique({
+      where: { id: params.id },
+      include: {
+        user: { select: { name: true } },
+        star: { select: { name: true } },
+      },
+    })
+
+    if (!moment) {
+      return {
+        title: 'Moment Not Found - MomentVerse',
+        description: 'This moment could not be found.',
+      }
+    }
+
+    const duration = Math.round((moment.endTime.getTime() - moment.startTime.getTime()) / 1000)
+    const startDate = moment.startTime.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+
+    return {
+      title: `${moment.dedication || 'Dedicated Moment'} - MomentVerse`,
+      description: `A ${duration}-second moment dedicated to eternity on ${startDate}. ${moment.star ? `Paired with star ${moment.star.name}.` : ''} ${moment.dedication || ''}`,
+      openGraph: {
+        title: `${moment.dedication || 'Dedicated Moment'} - MomentVerse`,
+        description: `A ${duration}-second moment dedicated to eternity on ${startDate}.`,
+        url: `${process.env.NEXTAUTH_URL}/moment/${params.id}`,
+        images: [
+          {
+            url: '/og-moment.jpg',
+            width: 1200,
+            height: 630,
+            alt: moment.dedication || 'Dedicated Moment',
+          },
+        ],
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${moment.dedication || 'Dedicated Moment'} - MomentVerse`,
+        description: `A ${duration}-second moment dedicated to eternity on ${startDate}.`,
+        images: ['/og-moment.jpg'],
+      },
+    }
+  } catch (error) {
+    return {
+      title: 'Moment - MomentVerse',
+      description: 'View this dedicated moment in time.',
+    }
   }
 }
 
@@ -15,9 +72,9 @@ export default async function MomentPage({ params }: MomentPageProps) {
   const moment = await prisma.moment.findUnique({
     where: { id: params.id },
     include: {
-      user: true,
-      star: true,
-      order: true,
+      user: { select: { name: true } },
+      star: { select: { name: true, hipparcosId: true } },
+      order: { select: { amount: true, status: true, createdAt: true } },
     },
   })
 
@@ -25,112 +82,151 @@ export default async function MomentPage({ params }: MomentPageProps) {
     notFound()
   }
 
-  const session = await getServerSession(authOptions)
-  const isOwner = session?.user?.email === moment.user.email
-  const canViewDedication = moment.isPublic || isOwner
+  const duration = Math.round((moment.endTime.getTime() - moment.startTime.getTime()) / 1000)
+  const startDate = moment.startTime.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
-      <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen star-field cosmic-bg">
+      <StarField />
+      
+      <div className="relative z-10 container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              Certificate of Time Dedication
+            <h1 className="text-5xl md:text-7xl font-bold gradient-text mb-6">
+              {moment.dedication || 'Dedicated Moment'}
             </h1>
-            <p className="text-xl text-gray-300">
-              Moment #{moment.id}
-            </p>
+            <div className="flex items-center justify-center space-x-4 text-gray-300">
+              <Clock className="w-6 h-6" />
+              <span className="text-xl">{duration} seconds</span>
+              <Star className="w-6 h-6" />
+              <span className="text-xl">Eternal</span>
+            </div>
           </div>
 
-          {/* Certificate Preview */}
-          <div className="bg-white rounded-lg shadow-2xl p-8 mb-8">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                Certificate of Time Dedication
+          {/* Moment Details */}
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="glass-card p-8">
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <Calendar className="w-6 h-6 mr-3 text-blue-400" />
+                Time Details
               </h2>
-              <p className="text-gray-600">MomentVerse</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Left side - Time details */}
-              <div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                  Time Dedicated
-                </h3>
-                <div className="space-y-2 text-gray-600">
-                  <p><strong>Start:</strong> {moment.startTime.toLocaleString()}</p>
-                  <p><strong>End:</strong> {moment.endTime.toLocaleString()}</p>
-                  <p><strong>Duration:</strong> {
-                    Math.floor((moment.endTime.getTime() - moment.startTime.getTime()) / 1000)
-                  } seconds</p>
+              <div className="space-y-4 text-gray-300">
+                <div>
+                  <span className="font-semibold">Start Time:</span> {startDate}
+                </div>
+                <div>
+                  <span className="font-semibold">Duration:</span> {duration} seconds
+                </div>
+                <div>
+                  <span className="font-semibold">Status:</span> 
+                  <span className="ml-2 px-2 py-1 bg-green-500/20 text-green-400 rounded text-sm">
+                    Dedicated to Eternity
+                  </span>
                 </div>
               </div>
+            </div>
 
-              {/* Right side - Dedication */}
-              <div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                  Dedication
-                </h3>
-                {canViewDedication && moment.dedication ? (
-                  <p className="text-gray-600 italic">"{moment.dedication}"</p>
-                ) : (
-                  <p className="text-gray-400 italic">
-                    {moment.isPublic ? 'No dedication provided' : 'Private dedication'}
-                  </p>
+            <div className="glass-card p-8">
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <User className="w-6 h-6 mr-3 text-purple-400" />
+                Dedication
+              </h2>
+              <div className="space-y-4 text-gray-300">
+                <div>
+                  <span className="font-semibold">Dedicated by:</span> {moment.user.name}
+                </div>
+                <div>
+                  <span className="font-semibold">Visibility:</span> 
+                  <span className={`ml-2 px-2 py-1 rounded text-sm ${moment.isPublic ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-500/20 text-gray-400'}`}>
+                    {moment.isPublic ? 'Public' : 'Private'}
+                  </span>
+                </div>
+                {moment.dedication && (
+                  <div>
+                    <span className="font-semibold">Message:</span>
+                    <p className="mt-2 italic">"{moment.dedication}"</p>
+                  </div>
                 )}
               </div>
             </div>
+          </div>
 
-            {/* Star information */}
-            {moment.star && (
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                  Paired Star
-                </h3>
-                <div className="flex items-center space-x-3">
-                  <span className="text-2xl">⭐</span>
-                  <span className="text-lg text-gray-700">{moment.star.name}</span>
+          {/* Star Information */}
+          {moment.star && (
+            <div className="glass-card p-8 mb-12">
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <Star className="w-6 h-6 mr-3 text-yellow-400" />
+                Paired Star
+              </h2>
+              <div className="grid md:grid-cols-2 gap-6 text-gray-300">
+                <div>
+                  <span className="font-semibold">Star Name:</span>
+                  <div className="text-xl text-yellow-400 font-bold">{moment.star.name}</div>
+                </div>
+                <div>
+                  <span className="font-semibold">Catalog ID:</span>
+                  <div className="text-lg">HIP {moment.star.hipparcosId}</div>
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Footer */}
-            <div className="mt-8 pt-8 border-t border-gray-200 text-sm text-gray-500">
-              <p>Issued to: {moment.user.name || moment.user.email}</p>
-              <p>Date: {moment.createdAt.toLocaleDateString()}</p>
+          {/* Certificate Features */}
+          <div className="glass-card p-8 mb-12">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+              <Award className="w-6 h-6 mr-3 text-green-400" />
+              Certificate Features
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6 text-gray-300">
+              <div className="space-y-3">
+                <div className="flex items-center">
+                  <div className={`w-3 h-3 rounded-full mr-3 ${moment.hasStarAddon ? 'bg-yellow-400' : 'bg-gray-500'}`}></div>
+                  <span>Star Pairing: {moment.hasStarAddon ? 'Included' : 'Not included'}</span>
+                </div>
+                <div className="flex items-center">
+                  <div className={`w-3 h-3 rounded-full mr-3 ${moment.hasPremiumCert ? 'bg-green-400' : 'bg-gray-500'}`}></div>
+                  <span>Premium Certificate: {moment.hasPremiumCert ? 'Included' : 'Standard'}</span>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-blue-400 rounded-full mr-3"></div>
+                  <span>QR Code Verification</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-purple-400 rounded-full mr-3"></div>
+                  <span>Timeline Placement</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {moment.order?.status === 'COMPLETED' && (
-              <Button className="bg-green-600 hover:bg-green-700">
-                Download Certificate
-              </Button>
-            )}
-            
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
-              Share Moment
-            </Button>
-            
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
-              View on Timeline
-            </Button>
-          </div>
+          {/* Action Buttons */}
+          <MomentActions momentId={moment.id} momentDedication={moment.dedication} />
 
-          {/* Order details (for owner) */}
-          {isOwner && moment.order && (
-            <div className="mt-8 bg-white/10 backdrop-blur-sm rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-white mb-4">Order Details</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-gray-300">
+          {/* Order Information (for moment owner) */}
+          {moment.order && (
+            <div className="glass-card p-6 mt-8">
+              <h3 className="text-lg font-semibold text-white mb-4">Order Details</h3>
+              <div className="grid md:grid-cols-3 gap-4 text-gray-300 text-sm">
                 <div>
-                  <p><strong>Status:</strong> {moment.order.status}</p>
-                  <p><strong>Amount:</strong> {formatPrice(moment.order.amount)}</p>
+                  <span className="font-semibold">Amount:</span> ${(moment.order.amount / 100).toFixed(2)}
                 </div>
                 <div>
-                  <p><strong>Star Addon:</strong> {moment.order.hasStarAddon ? 'Yes' : 'No'}</p>
-                  <p><strong>Premium Certificate:</strong> {moment.order.hasPremiumCert ? 'Yes' : 'No'}</p>
+                  <span className="font-semibold">Status:</span> 
+                  <span className="ml-2 px-2 py-1 bg-green-500/20 text-green-400 rounded">
+                    {moment.order.status}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-semibold">Created:</span> {moment.order.createdAt.toLocaleDateString()}
                 </div>
               </div>
             </div>

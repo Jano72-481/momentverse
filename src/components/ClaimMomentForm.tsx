@@ -1,34 +1,38 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { formatPrice, calculatePrice } from '@/lib/utils'
-import { Clock, Star, Award, Calendar, MessageSquare, Eye, EyeOff, Zap, Share2, Heart, TrendingUp, Users, Sparkles } from 'lucide-react'
+import { Clock, Star, Award, Calendar, MessageSquare, Eye, EyeOff, Zap, Share2, Heart, TrendingUp, Users, Sparkles, CheckCircle } from 'lucide-react'
 
 interface ClaimMomentFormProps {
   onSuccess: () => void
+  startTime?: string
+  endTime?: string
+  hasStarAddon?: boolean
 }
 
-export function ClaimMomentForm({ onSuccess }: ClaimMomentFormProps) {
+export function ClaimMomentForm({ onSuccess, startTime: initialStartTime, endTime: initialEndTime, hasStarAddon: initialHasStarAddon = false }: ClaimMomentFormProps) {
   // Set default times (current time and 1 minute later)
   const now = new Date()
   const oneMinuteLater = new Date(now.getTime() + 60000)
   
-  const [startTime, setStartTime] = useState(now.toISOString().slice(0, 16))
-  const [endTime, setEndTime] = useState(oneMinuteLater.toISOString().slice(0, 16))
+  const [startTime, setStartTime] = useState(initialStartTime || now.toISOString().slice(0, 16))
+  const [endTime, setEndTime] = useState(initialEndTime || oneMinuteLater.toISOString().slice(0, 16))
   const [dedication, setDedication] = useState('This moment represents a special time in my life that I want to preserve forever.')
   const [isPublic, setIsPublic] = useState(true)
-  const [hasStarAddon, setHasStarAddon] = useState(false)
+  const [hasStarAddon, setHasStarAddon] = useState(initialHasStarAddon)
   const [hasPremiumCert, setHasPremiumCert] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [showViralStats, setShowViralStats] = useState(false)
 
-  const price = calculatePrice(
+  // Optimize price calculation with useMemo
+  const price = useMemo(() => calculatePrice(
     startTime ? new Date(startTime) : new Date(),
     endTime ? new Date(endTime) : new Date(),
     hasStarAddon,
     hasPremiumCert
-  )
+  ), [startTime, endTime, hasStarAddon, hasPremiumCert])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -82,8 +86,42 @@ export function ClaimMomentForm({ onSuccess }: ClaimMomentFormProps) {
     }
   }
 
+  // Live summary
+  const summary = (
+    <div className="mb-6 p-4 rounded-lg bg-gradient-to-r from-purple-700/30 to-cyan-700/20 border border-purple-500/30 flex flex-col md:flex-row items-center gap-4">
+      <div className="flex items-center gap-2 text-white">
+        <CheckCircle className="w-5 h-5 text-green-400" />
+        <span className="font-semibold">{isPublic ? 'Public' : 'Private'} Moment</span>
+      </div>
+      <div className="flex items-center gap-2 text-white">
+        <Star className="w-5 h-5 text-yellow-400" />
+        <span>{hasStarAddon ? 'Star Paired' : 'No Star'}</span>
+      </div>
+      <div className="flex items-center gap-2 text-white">
+        <Award className="w-5 h-5 text-fuchsia-400" />
+        <span>{hasPremiumCert ? 'Premium Certificate' : 'Standard Certificate'}</span>
+      </div>
+    </div>
+  );
+
+  // Certificate preview (mock)
+  const certPreview = hasPremiumCert ? (
+    <div className="mb-6 flex justify-center">
+      <div className="w-64 h-40 bg-gradient-to-br from-yellow-200/80 to-fuchsia-200/60 border-4 border-yellow-400 rounded-xl shadow-xl flex items-center justify-center relative overflow-hidden">
+        <span className="absolute top-2 right-2 text-xs bg-yellow-400 text-white px-2 py-1 rounded-full font-bold shadow">PREMIUM</span>
+        <div className="text-center">
+          <div className="text-lg font-bold text-fuchsia-700 mb-1">Certificate of Eternity</div>
+          <div className="text-xs text-fuchsia-900 mb-2">This certifies a moment is dedicated forever</div>
+          <div className="text-xs text-yellow-700">{dedication.slice(0, 40)}...</div>
+        </div>
+      </div>
+    </div>
+  ) : null;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {summary}
+      {certPreview}
       {/* Viral Stats Banner */}
       <div className="glass-card p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30">
         <div className="flex items-center justify-between">
@@ -102,229 +140,148 @@ export function ClaimMomentForm({ onSuccess }: ClaimMomentFormProps) {
             {showViralStats ? 'Hide' : 'Show'} Stats
           </button>
         </div>
-        
         {showViralStats && (
           <div className="mt-4 grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-white">1,247</div>
-              <div className="text-gray-300 text-sm">Moments</div>
+              <div className="text-2xl font-bold text-white">2.1M</div>
+              <div className="text-xs text-gray-400">TikTok Views</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">892</div>
-              <div className="text-gray-300 text-sm">Stars</div>
+              <div className="text-2xl font-bold text-white">89%</div>
+              <div className="text-xs text-gray-400">Share Rate</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">$12,847</div>
-              <div className="text-gray-300 text-sm">Value</div>
+              <div className="text-2xl font-bold text-white">$847</div>
+              <div className="text-xs text-gray-400">Avg. Value</div>
             </div>
           </div>
         )}
       </div>
-
-      {/* Time Selection */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label className="block text-base font-semibold text-white mb-2 flex items-center">
-            <Calendar className="w-4 h-4 mr-2 text-blue-400" />
-            Start Time
-          </label>
-          <input
-            type="datetime-local"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            required
-            className="premium-input w-full p-3 text-base"
-            placeholder="Select start time"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="block text-base font-semibold text-white mb-2 flex items-center">
-            <Clock className="w-4 h-4 mr-2 text-purple-400" />
-            End Time
-          </label>
-          <input
-            type="datetime-local"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-            required
-            className="premium-input w-full p-3 text-base"
-            placeholder="Select end time"
-          />
-        </div>
-      </div>
-
       {/* Dedication */}
-      <div className="space-y-2">
-        <label className="block text-base font-semibold text-white mb-2 flex items-center">
-          <MessageSquare className="w-4 h-4 mr-2 text-green-400" />
-          Dedication (Optional)
-        </label>
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+          <MessageSquare className="w-5 h-5 mr-2 text-fuchsia-400" />
+          Your Dedication
+        </h3>
         <textarea
           value={dedication}
           onChange={(e) => setDedication(e.target.value)}
-          placeholder="What makes this moment special? Share your story..."
-          rows={3}
-          className="premium-input w-full p-3 text-base resize-none"
+          placeholder="Describe what this moment means to you..."
+          className="w-full min-h-[120px] resize-none bg-slate-800/60 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+          required
         />
-        <div className="text-gray-400 text-sm flex items-center">
-          <Sparkles className="w-3 h-3 mr-1" />
-          Pro tip: Emotional stories get more engagement on social media!
-        </div>
       </div>
-
-      {/* Privacy Toggle */}
-      <div className="glass-card p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            {isPublic ? (
-              <Eye className="w-4 h-4 text-blue-400" />
-            ) : (
-              <EyeOff className="w-4 h-4 text-gray-400" />
-            )}
-            <div>
-              <label className="text-base font-semibold text-white">Privacy Setting</label>
-              <p className="text-gray-400 text-sm">
-                {isPublic ? 'Public - Visible on timeline' : 'Private - Only you can see'}
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setIsPublic(!isPublic)}
-            className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 ${
-              isPublic ? 'bg-blue-500' : 'bg-gray-600'
-            }`}
-          >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
-                isPublic ? 'translate-x-7' : 'translate-x-1'
-              }`}
-            />
-          </button>
-        </div>
-      </div>
-
-      {/* Enhanced Add-ons */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-bold text-white flex items-center">
-          <Zap className="w-5 h-5 mr-2 text-yellow-400" />
-          Premium Add-ons
-        </h3>
-        
-        <div className="glass-card p-4 group hover:scale-105 transition-all duration-300">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-                <Star className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <label className="text-base font-semibold text-white flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={hasStarAddon}
-                    onChange={(e) => setHasStarAddon(e.target.checked)}
-                    className="mr-2 w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                  />
-                  Star Pairing
-                </label>
-                <p className="text-gray-400 text-sm">Pair your moment with a real star from the cosmos</p>
-              </div>
-            </div>
-            <span className="text-xl font-bold text-purple-400">+$3</span>
-          </div>
-        </div>
-
-        <div className="glass-card p-4 group hover:scale-105 transition-all duration-300">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center">
-                <Award className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <label className="text-base font-semibold text-white flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={hasPremiumCert}
-                    onChange={(e) => setHasPremiumCert(e.target.checked)}
-                    className="mr-2 w-4 h-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500"
-                  />
-                  Premium Certificate
-                </label>
-                <p className="text-gray-400 text-sm">Gold border and embossed seal design</p>
-              </div>
-            </div>
-            <span className="text-xl font-bold text-yellow-400">+$5</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Price Summary */}
+      {/* Privacy Settings */}
       <div className="glass-card p-6">
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-lg font-semibold text-white">Base Price:</span>
-          <span className="text-lg text-gray-300">$5.00</span>
-        </div>
-        
-        {hasStarAddon && (
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-base text-gray-300">Star Pairing:</span>
-            <span className="text-base text-purple-400">+$3.00</span>
-          </div>
-        )}
-        
-        {hasPremiumCert && (
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-base text-gray-300">Premium Certificate:</span>
-            <span className="text-base text-yellow-400">+$5.00</span>
-          </div>
-        )}
-        
-        <div className="border-t border-white/20 pt-3">
-          <div className="flex justify-between items-center">
-            <span className="text-xl font-bold text-white">Total Price:</span>
-            <span className="text-2xl font-bold text-blue-400">{formatPrice(price)}</span>
-          </div>
+        <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+          <Eye className="w-5 h-5 mr-2 text-fuchsia-400" />
+          Privacy Settings
+        </h3>
+        <div className="flex items-center space-x-4">
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="radio"
+              name="privacy"
+              value="public"
+              checked={isPublic}
+              onChange={() => setIsPublic(true)}
+              className="text-fuchsia-600 focus:ring-fuchsia-500"
+            />
+            <span className="text-white">Public - Share with the world</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="radio"
+              name="privacy"
+              value="private"
+              checked={!isPublic}
+              onChange={() => setIsPublic(false)}
+              className="text-fuchsia-600 focus:ring-fuchsia-500"
+            />
+            <span className="text-white">Private - Just for you</span>
+          </label>
         </div>
       </div>
-
-      {/* Social Sharing */}
-      <div className="glass-card p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Share2 className="w-5 h-5 text-blue-400" />
-            <div>
-              <div className="text-white font-semibold">Share Your Moment</div>
-              <div className="text-gray-400 text-sm">Let friends know about your cosmic dedication</div>
+      {/* Add-ons */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+          <Award className="w-5 h-5 mr-2 text-fuchsia-400" />
+          Enhance Your Moment
+        </h3>
+        <div className="space-y-4">
+          <label className="flex items-center justify-between p-4 bg-black/20 rounded-lg cursor-pointer hover:bg-black/30 transition-colors">
+            <div className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                checked={hasStarAddon}
+                onChange={(e) => setHasStarAddon(e.target.checked)}
+                className="text-fuchsia-600 focus:ring-fuchsia-500"
+              />
+              <Star className="w-5 h-5 text-fuchsia-400" />
+              <div>
+                <div className="text-white font-semibold">Star Pairing</div>
+                <div className="text-gray-400 text-sm">Pair your moment with a real star</div>
+              </div>
             </div>
-          </div>
-          <Button
-            type="button"
-            onClick={handleShare}
-            variant="outline"
-            className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white"
-          >
-            Share
-          </Button>
+            <div className="text-fuchsia-400 font-semibold">+$3</div>
+          </label>
+          <label className="flex items-center justify-between p-4 bg-black/20 rounded-lg cursor-pointer hover:bg-black/30 transition-colors">
+            <div className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                checked={hasPremiumCert}
+                onChange={(e) => setHasPremiumCert(e.target.checked)}
+                className="text-fuchsia-600 focus:ring-fuchsia-500"
+              />
+              <Award className="w-5 h-5 text-fuchsia-400" />
+              <div>
+                <div className="text-white font-semibold">Premium Certificate</div>
+                <div className="text-gray-400 text-sm">Gold border & embossed seal</div>
+              </div>
+            </div>
+            <div className="text-fuchsia-400 font-semibold">+$4</div>
+          </label>
         </div>
       </div>
-
-      {/* Enhanced Submit Button */}
+      {/* Price Summary */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold text-white">Total</h3>
+          <div className="text-3xl font-bold text-fuchsia-400 animate-pulse">{formatPrice(price)}</div>
+        </div>
+        <div className="text-sm text-gray-400 space-y-1">
+          <div>Base moment dedication</div>
+          {hasStarAddon && <div>+ Star pairing</div>}
+          {hasPremiumCert && <div>+ Premium certificate</div>}
+        </div>
+      </div>
+      {/* Submit Button */}
       <Button
         type="submit"
-        disabled={isLoading || !startTime || !endTime}
-        className="w-full premium-button text-lg py-4 font-bold group"
+        disabled={isLoading}
+        className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 text-lg py-6 font-semibold rounded-xl shadow-xl hover:scale-105 hover:shadow-2xl transition-all focus:ring-2 focus:ring-purple-500"
       >
         {isLoading ? (
-          <div className="flex items-center">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-            Processing...
+          <div className="flex items-center space-x-2">
+            <div className="spinner-optimized w-5 h-5"></div>
+            <span>Processing...</span>
           </div>
         ) : (
-          <div className="flex items-center">
-            <Zap className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-            Proceed to Checkout
+          <div className="flex items-center space-x-2">
+            <Zap className="w-5 h-5" />
+            <span>Dedicate to Eternity</span>
           </div>
         )}
+      </Button>
+      {/* Share Button */}
+      <Button
+        type="button"
+        onClick={handleShare}
+        variant="outline"
+        className="w-full glass-card text-white border-white/20 hover:bg-white/10 mt-2 shadow-md hover:scale-105 transition-all"
+      >
+        <Share2 className="w-5 h-5 mr-2" />
+        Share This Experience
       </Button>
     </form>
   )

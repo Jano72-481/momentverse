@@ -1,103 +1,179 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
-// Sample star data from Hipparcos catalog (brightest stars)
-const starData = [
-  { hipparcosId: 32349, name: "Sirius", ra: 101.287155, dec: -16.716116, mag: -1.46 },
-  { hipparcosId: 30438, name: "Canopus", ra: 95.987958, dec: -52.695661, mag: -0.74 },
-  { hipparcosId: 69673, name: "Arcturus", ra: 213.915300, dec: 19.182409, mag: -0.05 },
-  { hipparcosId: 71683, name: "Vega", ra: 279.234735, dec: 38.783689, mag: 0.03 },
-  { hipparcosId: 24608, name: "Capella", ra: 79.172328, dec: 45.997991, mag: 0.08 },
-  { hipparcosId: 37279, name: "Rigel", ra: 78.634467, dec: -8.201638, mag: 0.12 },
-  { hipparcosId: 65474, name: "Procyon", ra: 114.825493, dec: 5.224988, mag: 0.38 },
-  { hipparcosId: 60718, name: "Achernar", ra: 24.428523, dec: -57.236753, mag: 0.46 },
-  { hipparcosId: 7588, name: "Betelgeuse", ra: 88.792939, dec: 7.407064, mag: 0.50 },
-  { hipparcosId: 97649, name: "Hadar", ra: 210.955856, dec: -60.373035, mag: 0.61 },
-  { hipparcosId: 68702, name: "Altair", ra: 297.695827, dec: 8.868321, mag: 0.77 },
-  { hipparcosId: 86032, name: "Acrux", ra: 186.649563, dec: -63.099093, mag: 0.77 },
-  { hipparcosId: 107315, name: "Aldebaran", ra: 68.980163, dec: 16.509302, mag: 0.87 },
-  { hipparcosId: 113368, name: "Spica", ra: 201.298247, dec: -11.161319, mag: 0.98 },
-  { hipparcosId: 62434, name: "Antares", ra: 247.351915, dec: -26.432003, mag: 1.06 },
-  { hipparcosId: 102098, name: "Pollux", ra: 116.328957, dec: 28.026199, mag: 1.16 },
-  { hipparcosId: 80763, name: "Fomalhaut", ra: 344.412693, dec: -29.622237, mag: 1.17 },
-  { hipparcosId: 21421, name: "Deneb", ra: 310.357979, dec: 45.280339, mag: 1.25 },
-  { hipparcosId: 24436, name: "Mimosa", ra: 174.791512, dec: -69.717208, mag: 1.30 },
-  { hipparcosId: 36850, name: "Regulus", ra: 152.092962, dec: 11.967209, mag: 1.36 },
-  { hipparcosId: 49669, name: "Adhara", ra: 104.656453, dec: -28.972086, mag: 1.50 },
-  { hipparcosId: 33579, name: "Castor", ra: 113.649428, dec: 31.888276, mag: 1.58 },
-  { hipparcosId: 26311, name: "Shaula", ra: 263.402167, dec: -37.103823, mag: 1.62 },
-  { hipparcosId: 45238, name: "Bellatrix", ra: 81.282764, dec: 6.349703, mag: 1.64 },
-  { hipparcosId: 25336, name: "Elnath", ra: 81.572971, dec: 28.607452, mag: 1.65 },
-  { hipparcosId: 25428, name: "Miaplacidus", ra: 138.299906, dec: -69.717208, mag: 1.67 },
-  { hipparcosId: 42913, name: "Alnilam", ra: 84.053388, dec: -1.201919, mag: 1.69 },
-  { hipparcosId: 30324, name: "Alnair", ra: 332.549301, dec: -46.960974, mag: 1.73 },
-  { hipparcosId: 31681, name: "Alnitak", ra: 85.189695, dec: -1.942574, mag: 1.74 },
-  { hipparcosId: 65477, name: "Alioth", ra: 193.507290, dec: 55.959823, mag: 1.76 },
-  { hipparcosId: 62956, name: "Dubhe", ra: 165.931965, dec: 61.751035, mag: 1.79 },
-  { hipparcosId: 59774, name: "Mirfak", ra: 51.080708, dec: 49.861179, mag: 1.79 },
-  { hipparcosId: 67301, name: "Wezen", ra: 105.429758, dec: -26.393200, mag: 1.83 },
-  { hipparcosId: 34444, name: "Sargas", ra: 264.329711, dec: -42.997824, mag: 1.86 },
-  { hipparcosId: 53910, name: "Kaus Australis", ra: 276.992966, dec: -34.384616, mag: 1.85 },
-  { hipparcosId: 72607, name: "Avior", ra: 222.719873, dec: -59.229488, mag: 1.86 },
-  { hipparcosId: 39953, name: "Alkaid", ra: 206.885157, dec: 49.313267, mag: 1.86 },
-  { hipparcosId: 82273, name: "Menkent", ra: 211.670578, dec: -36.369958, mag: 1.86 },
-  { hipparcosId: 46390, name: "Atria", ra: 161.692331, dec: -69.027712, mag: 1.87 },
-  { hipparcosId: 61084, name: "Alhena", ra: 99.427961, dec: 16.399281, mag: 1.93 },
-  { hipparcosId: 37826, name: "Peacock", ra: 306.411904, dec: -56.735090, mag: 1.94 },
-  { hipparcosId: 76267, name: "Denebola", ra: 177.264910, dec: 14.572062, mag: 2.14 },
-  { hipparcosId: 57632, name: "Gienah", ra: 183.951507, dec: -17.541929, mag: 2.58 },
-  { hipparcosId: 677, name: "Polaris", ra: 37.952936, dec: 89.264217, mag: 1.97 },
-  { hipparcosId: 10826, name: "Alpheratz", ra: 2.096916, dec: 29.090431, mag: 2.07 },
-  { hipparcosId: 15863, name: "Almach", ra: 30.974804, dec: 42.329725, mag: 2.10 },
-  { hipparcosId: 18532, name: "Hamal", ra: 31.793357, dec: 23.462418, mag: 2.01 },
-  { hipparcosId: 2081, name: "Ankaa", ra: 6.570827, dec: -42.306361, mag: 2.40 },
-  { hipparcosId: 20889, name: "Diphda", ra: 10.897379, dec: -17.986606, mag: 2.04 },
-  { hipparcosId: 14135, name: "Navi", ra: 34.836065, dec: 56.537331, mag: 2.23 },
-  { hipparcosId: 4427, name: "Schedar", ra: 10.126838, dec: 56.537331, mag: 2.24 },
-  { hipparcosId: 3179, name: "Caph", ra: 2.294523, dec: 59.149781, mag: 2.28 },
-  { hipparcosId: 5447, name: "Mirach", ra: 17.433016, dec: 35.620557, mag: 2.07 },
-  { hipparcosId: 7607, name: "Algol", ra: 47.042215, dec: 40.955647, mag: 2.12 },
-  { hipparcosId: 9884, name: "Menkar", ra: 45.569881, dec: 4.089738, mag: 2.54 },
-  { hipparcosId: 13847, name: "Almach", ra: 30.974804, dec: 42.329725, mag: 2.10 },
-  { hipparcosId: 14576, name: "Ruchbah", ra: 21.453569, dec: 60.235283, mag: 2.68 },
-  { hipparcosId: 15863, name: "Almach", ra: 30.974804, dec: 42.329725, mag: 2.10 },
-  { hipparcosId: 18532, name: "Hamal", ra: 31.793357, dec: 23.462418, mag: 2.01 },
-  { hipparcosId: 2081, name: "Ankaa", ra: 6.570827, dec: -42.306361, mag: 2.40 },
-  { hipparcosId: 20889, name: "Diphda", ra: 10.897379, dec: -17.986606, mag: 2.04 },
-  { hipparcosId: 14135, name: "Navi", ra: 34.836065, dec: 56.537331, mag: 2.23 },
-  { hipparcosId: 4427, name: "Schedar", ra: 10.126838, dec: 56.537331, mag: 2.24 },
-  { hipparcosId: 3179, name: "Caph", ra: 2.294523, dec: 59.149781, mag: 2.28 },
-  { hipparcosId: 5447, name: "Mirach", ra: 17.433016, dec: 35.620557, mag: 2.07 },
-  { hipparcosId: 7607, name: "Algol", ra: 47.042215, dec: 40.955647, mag: 2.12 },
-  { hipparcosId: 9884, name: "Menkar", ra: 45.569881, dec: 4.089738, mag: 2.54 },
-  { hipparcosId: 13847, name: "Almach", ra: 30.974804, dec: 42.329725, mag: 2.10 },
-  { hipparcosId: 14576, name: "Ruchbah", ra: 21.453569, dec: 60.235283, mag: 2.68 },
-]
-
 async function main() {
-  console.log('🌟 Seeding stars...')
-  
-  for (const star of starData) {
-    await prisma.star.upsert({
-      where: { hipparcosId: star.hipparcosId },
-      update: {},
-      create: {
-        hipparcosId: star.hipparcosId,
-        name: star.name,
-        ra: star.ra,
-        dec: star.dec,
-        mag: star.mag,
-      },
+  // Safety check: Only seed in development
+  if (process.env.NODE_ENV === 'production') {
+    console.log('❌ Seeding is disabled in production')
+    return
+  }
+
+  console.log('🌱 Starting database seed...')
+
+  // Clear existing data
+  console.log('🧹 Clearing existing data...')
+  await prisma.analytics.deleteMany()
+  await prisma.order.deleteMany()
+  await prisma.moment.deleteMany()
+  await prisma.user.deleteMany()
+  await prisma.star.deleteMany()
+
+  // Create sample stars
+  console.log('⭐ Creating sample stars...')
+  const sampleStars = [
+    { hipparcosId: 71683, name: 'Alpha Centauri', ra: 219.902, dec: -60.833, mag: -0.27 },
+    { hipparcosId: 91262, name: 'Vega', ra: 279.235, dec: 38.784, mag: 0.03 },
+    { hipparcosId: 69673, name: 'Arcturus', ra: 213.915, dec: 19.182, mag: -0.05 },
+    { hipparcosId: 24608, name: 'Capella', ra: 79.172, dec: 45.998, mag: 0.08 },
+    { hipparcosId: 24436, name: 'Rigel', ra: 78.634, dec: -8.202, mag: 0.12 },
+    { hipparcosId: 37279, name: 'Procyon', ra: 114.825, dec: 5.225, mag: 0.34 },
+    { hipparcosId: 7588, name: 'Achernar', ra: 24.429, dec: -57.237, mag: 0.46 },
+    { hipparcosId: 27989, name: 'Betelgeuse', ra: 88.793, dec: 7.407, mag: 0.50 },
+    { hipparcosId: 68702, name: 'Hadar', ra: 210.956, dec: -60.373, mag: 0.61 },
+    { hipparcosId: 97649, name: 'Altair', ra: 297.696, dec: 8.868, mag: 0.77 },
+  ]
+
+  for (const star of sampleStars) {
+    await prisma.star.create({
+      data: star
     })
   }
-  
-  console.log(`✅ Seeded ${starData.length} stars`)
+
+  // Create sample users with hashed passwords
+  console.log('👥 Creating sample users...')
+  const sampleUsers = [
+    {
+      email: 'demo@momentverse.com',
+      name: 'Demo User',
+      passwordHash: await bcrypt.hash('password123', 12),
+      emailVerified: true,
+    },
+    {
+      email: 'sarah@example.com',
+      name: 'Sarah M.',
+      passwordHash: await bcrypt.hash('password123', 12),
+      emailVerified: true,
+    },
+    {
+      email: 'mike@example.com',
+      name: 'Mike R.',
+      passwordHash: await bcrypt.hash('password123', 12),
+      emailVerified: true,
+    },
+  ]
+
+  for (const user of sampleUsers) {
+    await prisma.user.create({
+      data: user
+    })
+  }
+
+  // Create sample moments and orders
+  console.log('⏰ Creating sample moments...')
+  const users = await prisma.user.findMany()
+  const stars = await prisma.star.findMany()
+
+  const sampleMoments = [
+    {
+      startTime: new Date('2024-01-15T10:30:00Z'),
+      endTime: new Date('2024-01-15T10:30:30Z'),
+      dedication: 'My graduation moment - forever preserved in the cosmos!',
+      isPublic: true,
+      hasStarAddon: true,
+      hasPremiumCert: true,
+      userId: users[0].id,
+      starId: stars[0].id,
+    },
+    {
+      startTime: new Date('2024-02-14T18:00:00Z'),
+      endTime: new Date('2024-02-14T18:00:45Z'),
+      dedication: 'The moment I said "I do" - now eternal among the stars',
+      isPublic: true,
+      hasStarAddon: true,
+      hasPremiumCert: true,
+      userId: users[1].id,
+      starId: stars[1].id,
+    },
+    {
+      startTime: new Date('2024-03-20T14:15:00Z'),
+      endTime: new Date('2024-03-20T14:15:20Z'),
+      dedication: 'Baby\'s first breath - a moment of pure magic',
+      isPublic: true,
+      hasStarAddon: false,
+      hasPremiumCert: false,
+      userId: users[2].id,
+    },
+    {
+      startTime: new Date('2024-04-10T09:00:00Z'),
+      endTime: new Date('2024-04-10T09:00:10Z'),
+      dedication: 'The moment I got my dream job - stars aligned!',
+      isPublic: false,
+      hasStarAddon: true,
+      hasPremiumCert: false,
+      userId: users[0].id,
+      starId: stars[2].id,
+    },
+  ]
+
+  for (const moment of sampleMoments) {
+    const createdMoment = await prisma.moment.create({
+      data: moment
+    })
+
+    // Calculate price based on add-ons
+    let amount = 500 // Base $5.00
+    if (moment.hasStarAddon) amount += 300 // +$3.00
+    if (moment.hasPremiumCert) amount += 500 // +$5.00
+
+    // Create associated order
+    await prisma.order.create({
+      data: {
+        momentId: createdMoment.id,
+        userId: moment.userId,
+        amount: amount,
+        status: 'COMPLETED',
+        stripeSessionId: `cs_test_${Math.random().toString(36).substr(2, 9)}`,
+        hasStarAddon: moment.hasStarAddon,
+        hasPremiumCert: moment.hasPremiumCert,
+      }
+    })
+  }
+
+  // Create sample analytics events
+  console.log('📊 Creating sample analytics...')
+  const analyticsEvents = [
+    { event: 'page_view', source: 'direct', userId: users[0].id },
+    { event: 'form_fill', source: 'tiktok', userId: users[0].id },
+    { event: 'tiktok_click', source: 'tiktok', userId: users[1].id },
+    { event: 'certificate_download', source: 'organic', userId: users[0].id },
+    { event: 'moment_shared', source: 'organic', userId: users[1].id },
+  ]
+
+  for (const event of analyticsEvents) {
+    await prisma.analytics.create({
+      data: {
+        ...event,
+        metadata: JSON.stringify({ 
+          timestamp: new Date().toISOString(),
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+          ipAddress: '127.0.0.1',
+        }),
+      }
+    })
+  }
+
+  console.log('✅ Database seeded successfully!')
+  console.log('\n📋 Demo Credentials:')
+  console.log('Email: demo@momentverse.com')
+  console.log('Password: password123')
+  console.log('\n🌐 Visit http://localhost:3000 to explore!')
 }
 
 main()
   .catch((e) => {
-    console.error(e)
+    console.error('❌ Error seeding database:', e)
     process.exit(1)
   })
   .finally(async () => {

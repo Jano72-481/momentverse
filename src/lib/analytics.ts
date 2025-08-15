@@ -8,7 +8,8 @@ export interface AnalyticsEvent {
   metadata?: Record<string, any>
 }
 
-export async function trackEvent(eventData: AnalyticsEvent) {
+// Track analytics event
+export const trackEvent = async (eventData: AnalyticsEvent) => {
   try {
     await prisma.analytics.create({
       data: {
@@ -17,24 +18,106 @@ export async function trackEvent(eventData: AnalyticsEvent) {
         userId: eventData.userId,
         sessionId: eventData.sessionId,
         metadata: eventData.metadata ? JSON.stringify(eventData.metadata) : null,
-      }
+      },
     })
   } catch (error) {
     console.error('Error tracking analytics event:', error)
+    // Don't throw error as analytics shouldn't break the app
   }
 }
 
-// Predefined event tracking functions
-export async function trackPageView(page: string, source?: string, userId?: string) {
+// Track page view
+export const trackPageView = async (page: string, userId?: string, sessionId?: string) => {
   await trackEvent({
     event: 'page_view',
-    source,
+    metadata: { page },
     userId,
-    metadata: { page }
+    sessionId,
   })
 }
 
-export async function trackFormFill(source?: string, userId?: string) {
+// Track form submission
+export const trackFormSubmission = async (formName: string, userId?: string, sessionId?: string) => {
+  await trackEvent({
+    event: 'form_submission',
+    metadata: { formName },
+    userId,
+    sessionId,
+  })
+}
+
+// Track moment creation
+export const trackMomentCreation = async (momentId: string, userId: string, hasStarAddon: boolean, hasPremiumCert: boolean) => {
+  await trackEvent({
+    event: 'moment_created',
+    userId,
+    metadata: {
+      momentId,
+      hasStarAddon,
+      hasPremiumCert,
+    },
+  })
+}
+
+// Track purchase
+export const trackPurchase = async (orderId: string, userId: string, amount: number, currency: string) => {
+  await trackEvent({
+    event: 'purchase',
+    userId,
+    metadata: {
+      orderId,
+      amount,
+      currency,
+    },
+  })
+}
+
+// Track social share
+export const trackSocialShare = async (platform: string, momentId: string, userId?: string) => {
+  await trackEvent({
+    event: 'social_share',
+    source: platform,
+    userId,
+    metadata: {
+      momentId,
+      platform,
+    },
+  })
+}
+
+// Track certificate download
+export const trackCertificateDownload = async (momentId: string, userId: string) => {
+  await trackEvent({
+    event: 'certificate_download',
+    userId,
+    metadata: {
+      momentId,
+    },
+  })
+}
+
+// Track user registration
+export const trackUserRegistration = async (userId: string, source?: string) => {
+  await trackEvent({
+    event: 'user_registration',
+    source,
+    userId,
+  })
+}
+
+// Track user login
+export const trackUserLogin = async (userId: string, method: string = 'credentials') => {
+  await trackEvent({
+    event: 'user_login',
+    userId,
+    metadata: {
+      method,
+    },
+  })
+}
+
+// Track form fill (legacy function)
+export const trackFormFill = async (source?: string, userId?: string) => {
   await trackEvent({
     event: 'form_fill',
     source,
@@ -43,25 +126,8 @@ export async function trackFormFill(source?: string, userId?: string) {
   })
 }
 
-export async function trackPurchase(amount: number, source?: string, userId?: string) {
-  await trackEvent({
-    event: 'purchase',
-    source,
-    userId,
-    metadata: { amount, currency: 'USD' }
-  })
-}
-
-export async function trackShare(platform: string, source?: string, userId?: string) {
-  await trackEvent({
-    event: 'share',
-    source,
-    userId,
-    metadata: { platform }
-  })
-}
-
-export async function trackTikTokClick(source: string, userId?: string) {
+// Track TikTok click (legacy function)
+export const trackTikTokClick = async (source: string, userId?: string) => {
   await trackEvent({
     event: 'tiktok_click',
     source: 'tiktok',
@@ -70,132 +136,94 @@ export async function trackTikTokClick(source: string, userId?: string) {
   })
 }
 
-// Analytics reporting functions
-export async function getConversionStats(days: number = 30) {
-  const startDate = new Date()
-  startDate.setDate(startDate.getDate() - days)
+// Get analytics summary
+export const getAnalyticsSummary = async (days: number = 30) => {
+  try {
+    const startDate = new Date()
+    startDate.setDate(startDate.getDate() - days)
 
-  const stats = await prisma.analytics.groupBy({
-    by: ['event'],
-    where: {
-      createdAt: {
-        gte: startDate
-      }
-    },
-    _count: {
-      event: true
-    }
-  })
-
-  return stats.reduce((acc, stat) => {
-    acc[stat.event] = stat._count.event
-    return acc
-  }, {} as Record<string, number>)
-}
-
-export async function getSourceStats(days: number = 30) {
-  const startDate = new Date()
-  startDate.setDate(startDate.getDate() - days)
-
-  const stats = await prisma.analytics.groupBy({
-    by: ['source'],
-    where: {
-      createdAt: {
-        gte: startDate
+    const events = await prisma.analytics.findMany({
+      where: {
+        createdAt: {
+          gte: startDate,
+        },
       },
-      source: {
-        not: null
-      }
-    },
-    _count: {
-      source: true
+    })
+
+    const summary = {
+      totalEvents: events.length,
+      uniqueUsers: new Set(events.filter(e => e.userId).map(e => e.userId)).size,
+      pageViews: events.filter(e => e.event === 'page_view').length,
+      registrations: events.filter(e => e.event === 'user_registration').length,
+      logins: events.filter(e => e.event === 'user_login').length,
+      momentCreations: events.filter(e => e.event === 'moment_created').length,
+      purchases: events.filter(e => e.event === 'purchase').length,
+      socialShares: events.filter(e => e.event === 'social_share').length,
+      certificateDownloads: events.filter(e => e.event === 'certificate_download').length,
     }
-  })
 
-  return stats.reduce((acc, stat) => {
-    if (stat.source) {
-      acc[stat.source] = stat._count.source
-    }
-    return acc
-  }, {} as Record<string, number>)
-}
-
-export async function getRevenueStats(days: number = 30) {
-  const startDate = new Date()
-  startDate.setDate(startDate.getDate() - days)
-
-  const purchases = await prisma.analytics.findMany({
-    where: {
-      event: 'purchase',
-      createdAt: {
-        gte: startDate
-      }
-    },
-    select: {
-      metadata: true
-    }
-  })
-
-  const totalRevenue = purchases.reduce((sum, purchase) => {
-    if (purchase.metadata) {
-      const metadata = JSON.parse(purchase.metadata)
-      return sum + (metadata.amount || 0)
-    }
-    return sum
-  }, 0)
-
-  return {
-    totalRevenue,
-    purchaseCount: purchases.length,
-    averageOrderValue: purchases.length > 0 ? totalRevenue / purchases.length : 0
+    return summary
+  } catch (error) {
+    console.error('Error getting analytics summary:', error)
+    return null
   }
 }
 
-// TikTok Pixel integration
-export function getTikTokPixelScript() {
-  return `
-    !function (w, d, t) {
-      w[t] = w[t] || [];
-      w[t].push('ttq.load', 'YOUR_TIKTOK_PIXEL_ID');
-      var s = d.createElement(t);
-      s.src = 'https://analytics.tiktok.com/i18n/pixel/sdk.js?sdkid=YOUR_TIKTOK_PIXEL_ID';
-      var i = d.getElementsByTagName(t)[0];
-      i.parentNode.insertBefore(s, i);
-    }(window, document, 'ttq');
-  `
-}
+// Get top sources
+export const getTopSources = async (days: number = 30) => {
+  try {
+    const startDate = new Date()
+    startDate.setDate(startDate.getDate() - days)
 
-export function trackTikTokEvent(eventName: string, parameters: Record<string, any> = {}) {
-  if (typeof window !== 'undefined' && (window as any).ttq) {
-    (window as any).ttq.track(eventName, parameters)
+    const events = await prisma.analytics.findMany({
+      where: {
+        createdAt: {
+          gte: startDate,
+        },
+        source: {
+          not: null,
+        },
+      },
+      select: {
+        source: true,
+      },
+    })
+
+    const sourceCounts = events.reduce((acc, event) => {
+      const source = event.source || 'unknown'
+      acc[source] = (acc[source] || 0) + 1
+      return acc
+    }, {} as Record<string, number>)
+
+    return Object.entries(sourceCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10)
+      .map(([source, count]) => ({ source, count }))
+  } catch (error) {
+    console.error('Error getting top sources:', error)
+    return []
   }
 }
 
-// A/B Testing hooks
-export async function getABTestVariant(testName: string, userId?: string): Promise<string> {
-  // Simple A/B testing implementation
-  // In production, you'd use a proper A/B testing service
-  if (userId) {
-    // Consistent variant based on user ID
-    const hash = userId.split('').reduce((a, b) => {
-      a = ((a << 5) - a) + b.charCodeAt(0)
-      return a & a
-    }, 0)
-    return hash % 2 === 0 ? 'A' : 'B'
-  }
-  
-  // Random variant for anonymous users
-  return Math.random() < 0.5 ? 'A' : 'B'
-}
+// Get user journey
+export const getUserJourney = async (userId: string) => {
+  try {
+    const events = await prisma.analytics.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    })
 
-export async function trackABTestEvent(testName: string, variant: string, event: string, userId?: string) {
-  await trackEvent({
-    event: `ab_test_${event}`,
-    userId,
-    metadata: {
-      testName,
-      variant,
-      event
-    }
-  })
+    return events.map(event => ({
+      event: event.event,
+      timestamp: event.createdAt,
+      metadata: event.metadata ? JSON.parse(event.metadata) : null,
+    }))
+  } catch (error) {
+    console.error('Error getting user journey:', error)
+    return []
+  }
 } 

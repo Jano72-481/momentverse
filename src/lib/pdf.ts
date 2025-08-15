@@ -2,6 +2,8 @@ import PDFDocument from 'pdfkit'
 import QRCode from 'qrcode'
 import { writeFileSync } from 'fs'
 import { join } from 'path'
+// @ts-ignore
+import type * as PDFKit from 'pdfkit'
 
 export async function generateCertificate({
   momentId,
@@ -150,10 +152,10 @@ export async function generateCertificate({
   return doc
 }
 
-export async function saveCertificate(doc: PDFDocument, momentId: string): Promise<string> {
+export async function saveCertificate(doc: PDFKit.PDFDocument, momentId: string): Promise<string> {
   const chunks: Buffer[] = []
   
-  doc.on('data', (chunk) => {
+  doc.on('data', (chunk: Buffer) => {
     chunks.push(chunk)
   })
 

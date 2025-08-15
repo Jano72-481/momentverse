@@ -1,64 +1,142 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import { ReactNode } from 'react'
+import { Toaster } from 'react-hot-toast'
+import Providers from '@/components/Providers'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import './globals.css'
-import { Providers } from '@/components/Providers'
-import { getTikTokPixelScript } from '@/lib/analytics'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'MomentVerse - Where Time Meets Eternity',
-  description: 'Dedicate moments in time to eternity. Pair your special moments with real stars from the cosmos and receive beautiful certificates.',
-  keywords: 'moment dedication, star pairing, time capsule, cosmic certificates, eternal moments',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  title: {
+    default: 'MomentVerse – Dedicate time to eternity',
+    template: '%s | MomentVerse'
+  },
+  description:
+    'Own any second in history, pair it with a real star and share a beautiful certificate that lasts forever. Create permanent, verifiable records of your most meaningful moments.',
+  keywords: [
+    'moment dedication',
+    'star pairing',
+    'digital certificates',
+    'memory preservation',
+    'timeline',
+    'eternity',
+    'meaningful moments',
+    'digital legacy'
+  ],
+  authors: [{ name: 'MomentVerse Team' }],
+  creator: 'MomentVerse',
+  publisher: 'MomentVerse',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
-    title: 'MomentVerse - Where Time Meets Eternity',
-    description: 'Dedicate moments in time to eternity. Pair your special moments with real stars from the cosmos.',
-    type: 'website',
+    title: 'MomentVerse – Dedicate time to eternity',
+    description:
+      'Own any second in history and pair it with a star of your choice. Create permanent, verifiable records of your most meaningful moments.',
     url: 'https://momentverse.com',
-    images: ['/og-image.jpg'],
+    siteName: 'MomentVerse',
+    images: [
+      {
+        url: '/api/og?title=MomentVerse',
+        width: 1200,
+        height: 630,
+        alt: 'MomentVerse - Dedicate time to eternity',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MomentVerse - Where Time Meets Eternity',
-    description: 'Dedicate moments in time to eternity. Pair your special moments with real stars from the cosmos.',
-    images: ['/og-image.jpg'],
+    title: 'MomentVerse – Dedicate time to eternity',
+    description: 'Own any second in history and pair it with a star of your choice.',
+    images: ['/api/og?title=MomentVerse'],
+    creator: '@momentverse',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: process.env.GOOGLE_VERIFICATION,
+    yandex: process.env.YANDEX_VERIFICATION,
+  },
+  alternates: {
+    canonical: 'https://momentverse.com',
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#7F00FF' },
+    { media: '(prefers-color-scheme: dark)', color: '#0d0221' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  colorScheme: 'dark',
+}
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <head>
-        {/* TikTok Pixel */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: getTikTokPixelScript()
-          }}
-        />
-        
-        {/* Google Analytics */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'GA_MEASUREMENT_ID');
-            `
-          }}
-        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://js.stripe.com" />
+        <link rel="dns-prefetch" href="https://api.stripe.com" />
+        <meta name="theme-color" content="#0d0221" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="MomentVerse" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={inter.className}>
+      <body className="min-h-screen bg-space-gradient text-white antialiased selection:bg-purple-500/20 selection:text-white">
         <Providers>
-          {children}
+          <Header />
+          <main id="main-content">
+            {children}
+          </main>
+          <Footer />
+          <Toaster 
+            position="top-center"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: 'rgba(0, 0, 0, 0.9)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '8px',
+                fontSize: '14px',
+                maxWidth: '400px',
+              },
+              success: {
+                iconTheme: {
+                  primary: '#10B981',
+                  secondary: 'white',
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: '#EF4444',
+                  secondary: 'white',
+                },
+              },
+            }}
+          />
         </Providers>
       </body>
     </html>

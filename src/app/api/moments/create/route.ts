@@ -5,92 +5,98 @@ import { stripe } from '@/lib/stripe'
 import { formatPrice } from '@/lib/utils'
 import { authOptions } from '@/lib/auth'
 import { trackFormFill, trackTikTokClick } from '@/lib/analytics'
+import { momentSchema, validateRequest, validateTimeRange, validatePrice, sanitizeInput } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
   try {
-    const authSession = await getServerSession(authOptions)
-    
-    // For now, allow anonymous users (we'll implement proper auth later)
-    const userId = (authSession?.user as any)?.id || 'anonymous-user'
-    
-    const body = await request.json()
-    const { startTime, endTime, dedication, isPublic, hasStarAddon, hasPremiumCert } = body
-
-    // Enhanced validation
-    if (!startTime || !endTime) {
+    // 1. Authentication check
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { error: 'Start time and end time are required' },
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+
+    const userId = session.user.id
+
+    // 2. Parse and validate request body
+    const body = await request.json()
+    const validation = validateRequest(momentSchema, body)
+    
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: validation.error },
         { status: 400 }
       )
     }
 
+    const { startTime, endTime, dedication, isPublic, hasStarAddon, hasPremiumCert } = validation.data
+
+    // 3. Validate time range
     const start = new Date(startTime)
     const end = new Date(endTime)
-    const now = new Date()
-
-    // Validate time ranges
-    if (start >= end) {
+    const timeValidation = validateTimeRange(start, end)
+    
+    if (!timeValidation.valid) {
       return NextResponse.json(
-        { error: 'End time must be after start time' },
+        { error: timeValidation.error },
         { status: 400 }
       )
     }
 
-    if (end <= now) {
-      return NextResponse.json(
-        { error: 'Cannot dedicate moments in the past' },
-        { status: 400 }
-      )
-    }
-
-    const durationMs = end.getTime() - start.getTime()
-    const maxDurationMs = 24 * 60 * 60 * 1000 // 24 hours
-
-    if (durationMs > maxDurationMs) {
-      return NextResponse.json(
-        { error: 'Duration cannot exceed 24 hours' },
-        { status: 400 }
-      )
-    }
-
-    // Calculate price
-    const basePrice = 500 // $5.00 in cents
-    let totalPrice = basePrice
-
-    if (hasStarAddon) {
-      totalPrice += 300 // $3.00
-    }
-
-    if (hasPremiumCert) {
-      totalPrice += 500 // $5.00
-    }
-
-    // Create moment in database
-    const moment = await prisma.moment.create({
-      data: {
-        startTime: start,
-        endTime: end,
-        dedication: dedication || 'A special moment dedicated to eternity',
-        isPublic: isPublic ?? true,
-        userId: userId,
-        hasStarAddon: hasStarAddon ?? false,
-        hasPremiumCert: hasPremiumCert ?? false,
-      },
+    // 4. Calculate and validate price
+    const basePrice = 299 // $2.99 in cents
+    const priceValidation = validatePrice(basePrice, {
+      star: hasStarAddon,
+      premium: hasPremiumCert
     })
 
-    // Create order with addon information
-    const order = await prisma.order.create({
-      data: {
-        momentId: moment.id,
-        userId: userId,
-        stripeSessionId: 'temp-session-id', // Will be updated after Stripe session creation
-        amount: totalPrice,
-        hasStarAddon: hasStarAddon ?? false,
-        hasPremiumCert: hasPremiumCert ?? false,
-      },
+    if (!priceValidation.valid) {
+      return NextResponse.json(
+        { error: priceValidation.error },
+        { status: 400 }
+      )
+    }
+
+    const totalPrice = priceValidation.total
+
+    // 5. Sanitize dedication text
+    const sanitizedDedication = dedication ? sanitizeInput(dedication) : 'A special moment dedicated to eternity'
+
+    // 6. Create moment in database with transaction
+    const result = await prisma.$transaction(async (tx) => {
+      // Create moment
+      const moment = await tx.moment.create({
+        data: {
+          startTime: start,
+          endTime: end,
+          dedication: sanitizedDedication,
+          isPublic: isPublic ?? true,
+          userId: userId,
+          hasStarAddon: hasStarAddon ?? false,
+          hasPremiumCert: hasPremiumCert ?? false,
+        },
+      })
+
+      // Create order
+      const order = await tx.order.create({
+        data: {
+          momentId: moment.id,
+          userId: userId,
+          stripeSessionId: 'temp-session-id', // Will be updated after Stripe session creation
+          amount: totalPrice,
+          hasStarAddon: hasStarAddon ?? false,
+          hasPremiumCert: hasPremiumCert ?? false,
+        },
+      })
+
+      return { moment, order }
     })
 
-    // Create Stripe checkout session
+    const { moment, order } = result
+
+    // 7. Create Stripe checkout session
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -100,7 +106,7 @@ export async function POST(request: NextRequest) {
             product_data: {
               name: 'Moment Dedication',
               description: `Dedication from ${start.toLocaleString()} to ${end.toLocaleString()}`,
-              images: ['https://momentverse.com/certificate-preview.jpg'], // Add your certificate preview image
+              images: ['https://momentverse.com/certificate-preview.jpg'],
             },
             unit_amount: totalPrice,
           },
@@ -113,7 +119,7 @@ export async function POST(request: NextRequest) {
               name: 'Star Pairing Add-on',
               description: 'Pair your moment with a real star from the cosmos',
             },
-            unit_amount: 300,
+            unit_amount: 300, // Keep star addon at $3.00
           },
           quantity: 1,
         }] : []),
@@ -124,7 +130,7 @@ export async function POST(request: NextRequest) {
               name: 'Premium Certificate Add-on',
               description: 'Gold border and embossed seal design',
             },
-            unit_amount: 500,
+            unit_amount: 400, // Premium cert now $4.00 to make total $9.99
           },
           quantity: 1,
         }] : []),
@@ -142,17 +148,19 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Update order with actual Stripe session ID
+    // 8. Update order with actual Stripe session ID
     await prisma.order.update({
       where: { id: order.id },
       data: { stripeSessionId: stripeSession.id },
     })
 
-    // Track analytics events
-    await trackFormFill('direct', userId)
-    await trackTikTokClick('moment_creation', userId)
+    // 9. Track analytics events
+    await Promise.all([
+      trackFormFill('direct', userId),
+      trackTikTokClick('moment_creation', userId)
+    ]).catch(console.error) // Don't fail if analytics fail
 
-    // Return success with checkout URL
+    // 10. Return success response
     return NextResponse.json({
       success: true,
       momentId: moment.id,
@@ -164,11 +172,18 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating moment:', error)
     
-    // Enhanced error handling
+    // Enhanced error handling with specific error types
     if (error instanceof Error) {
       if (error.message.includes('Stripe')) {
         return NextResponse.json(
           { error: 'Payment processing error. Please try again.' },
+          { status: 500 }
+        )
+      }
+      
+      if (error.message.includes('Database')) {
+        return NextResponse.json(
+          { error: 'Database error. Please try again.' },
           { status: 500 }
         )
       }

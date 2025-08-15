@@ -3,7 +3,7 @@ import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/db'
 import { generateAndSaveCertificate } from '@/lib/certificate'
-import { sendCertificateEmail } from '@/lib/email'
+import { sendCertificateReadyEmail } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -100,17 +100,12 @@ async function handleCheckoutSessionCompleted(session: any) {
 
     if (moment?.user?.email) {
       // Send certificate email
-      await sendCertificateEmail(
+      await sendCertificateReadyEmail(
         moment.user.email,
-        `${process.env.NEXTAUTH_URL}${certificateUrl}`,
-        {
-          startTime: moment.startTime,
-          endTime: moment.endTime,
-          dedication: moment.dedication,
-          hasStarAddon: moment.hasStarAddon,
-          hasPremiumCert: moment.hasPremiumCert
-        }
-      )
+        moment.user.name || 'Friend',
+        moment.id,
+        moment.dedication || ''
+      );
     }
 
     console.log(`Certificate generated for moment ${momentId}: ${certificateUrl}`)

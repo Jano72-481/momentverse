@@ -17,6 +17,15 @@ module.exports = {
     },
     extend: {
       colors: {
+        brand: {
+          50:  '#f5ebff',
+          100: '#e9d6ff',
+          400: '#ae76ff',
+          500: '#8f4dff',
+          600: '#6d39d9',
+          700: '#4b26a5',
+          900: '#12053e'
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -51,6 +60,14 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      backgroundImage: {
+        'space-gradient':
+          'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%)',
+        'cosmic-gradient':
+          'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)',
+        'night-gradient':
+          'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%)'
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -69,11 +86,16 @@ module.exports = {
           "0%, 100%": { boxShadow: "0 0 5px rgba(59, 130, 246, 0.5)" },
           "50%": { boxShadow: "0 0 20px rgba(59, 130, 246, 0.8)" },
         },
+        "twinkle": {
+          "0%, 100%": { opacity: 0.4 },
+          "50%": { opacity: 1 },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "glow": "glow 2s ease-in-out infinite alternate",
+        "twinkle": "twinkle 2s ease-in-out infinite",
       },
     },
   },
