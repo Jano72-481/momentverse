@@ -75,6 +75,16 @@ async function main() {
   const users = await prisma.user.findMany()
   const stars = await prisma.star.findMany()
 
+  // Safety check: ensure we have users and stars
+  if (users.length === 0) {
+    console.log('⚠️ No users found - skipping moment creation')
+    return
+  }
+  if (stars.length === 0) {
+    console.log('⚠️ No stars found - skipping moment creation')
+    return
+  }
+
   const sampleMoments = [
     {
       startTime: new Date('2024-01-15T10:30:00Z'),
@@ -83,8 +93,8 @@ async function main() {
       isPublic: true,
       hasStarAddon: true,
       hasPremiumCert: true,
-      userId: users[0].id,
-      starId: stars[0].id,
+      userId: users[0]!.id,
+      starId: stars[0]!.id,
     },
     {
       startTime: new Date('2024-02-14T18:00:00Z'),
@@ -93,8 +103,8 @@ async function main() {
       isPublic: true,
       hasStarAddon: true,
       hasPremiumCert: true,
-      userId: users[1].id,
-      starId: stars[1].id,
+      userId: users[1]?.id || users[0]!.id,
+      starId: stars[1]?.id || stars[0]!.id,
     },
     {
       startTime: new Date('2024-03-20T14:15:00Z'),
@@ -103,7 +113,7 @@ async function main() {
       isPublic: true,
       hasStarAddon: false,
       hasPremiumCert: false,
-      userId: users[2].id,
+      userId: users[2]?.id || users[0]!.id,
     },
     {
       startTime: new Date('2024-04-10T09:00:00Z'),
@@ -112,8 +122,8 @@ async function main() {
       isPublic: false,
       hasStarAddon: true,
       hasPremiumCert: false,
-      userId: users[0].id,
-      starId: stars[2].id,
+      userId: users[0]!.id,
+      starId: stars[2]?.id || stars[0]!.id,
     },
   ]
 
@@ -144,11 +154,11 @@ async function main() {
   // Create sample analytics events
   console.log('📊 Creating sample analytics...')
   const analyticsEvents = [
-    { event: 'page_view', source: 'direct', userId: users[0].id },
-    { event: 'form_fill', source: 'tiktok', userId: users[0].id },
-    { event: 'tiktok_click', source: 'tiktok', userId: users[1].id },
-    { event: 'certificate_download', source: 'organic', userId: users[0].id },
-    { event: 'moment_shared', source: 'organic', userId: users[1].id },
+    { event: 'page_view', source: 'direct', userId: users[0]!.id },
+    { event: 'form_fill', source: 'tiktok', userId: users[0]!.id },
+    { event: 'tiktok_click', source: 'tiktok', userId: users[1]?.id || users[0]!.id },
+    { event: 'certificate_download', source: 'organic', userId: users[0]!.id },
+    { event: 'moment_shared', source: 'organic', userId: users[1]?.id || users[0]!.id },
   ]
 
   for (const event of analyticsEvents) {
