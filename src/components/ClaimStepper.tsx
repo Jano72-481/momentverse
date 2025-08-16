@@ -89,11 +89,13 @@ export default function ClaimStepper() {
               </button>
               <h2 className="text-2xl font-bold night-sky-gradient-text">3 · Personalize & Checkout</h2>
             </div>
-            <ClaimMomentForm 
-              startTime={iso} 
-              hasStarAddon={!!starId} 
-              onSuccess={() => {}} 
-            />
+            {iso && (
+              <ClaimMomentForm 
+                startTime={iso} 
+                hasStarAddon={!!starId} 
+                onSuccess={() => {}} 
+              />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

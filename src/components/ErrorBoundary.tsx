@@ -39,7 +39,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   resetError = () => {
-    this.setState({ hasError: false, error: undefined })
+    this.setState({ hasError: false, error: null })
   }
 
   render() {
@@ -125,7 +125,7 @@ export function withErrorBoundary<P extends object>(
 ) {
   return function WithErrorBoundary(props: P) {
     return (
-      <ErrorBoundary fallback={fallback}>
+      <ErrorBoundary fallback={fallback || undefined}>
         <Component {...props} />
       </ErrorBoundary>
     )
