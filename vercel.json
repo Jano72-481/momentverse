@@ -1,5 +1,4 @@
 {
-  "buildCommand": "next build",
   "installCommand": "pnpm install",
   "framework": "nextjs",
   "functions": {
@@ -52,8 +51,5 @@
       "source": "/api/webhooks/stripe",
       "destination": "/api/stripe-webhook"
     }
-  ],
-  "env": {
-    "NEXTAUTH_URL": "https://momentverse.vercel.app"
-  }
+  ]
 } 
