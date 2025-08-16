@@ -212,7 +212,7 @@ export default function TimelineVirtuoso({
   }, []);
 
   // Enhanced time group rendering with better visual appeal
-  const renderTimeGroup = useCallback((group: { key: string; moments: Moment[]; totalMoments: number; starCount: number; topMoment: Moment }) => {
+  const renderTimeGroup = useCallback((group: { key: string; moments: Moment[]; totalMoments: number; starCount: number; topMoment: Moment | undefined }) => {
     const date = parseISO(group.moments[0]?.startTime || new Date().toISOString());
     const formatDate = (date: Date, scale: TimeScale) => {
       switch (scale) {
