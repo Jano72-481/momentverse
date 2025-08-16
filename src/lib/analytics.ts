@@ -14,9 +14,9 @@ export const trackEvent = async (eventData: AnalyticsEvent) => {
     await prisma.analytics.create({
       data: {
         event: eventData.event,
-        source: eventData.source,
-        userId: eventData.userId,
-        sessionId: eventData.sessionId,
+        ...(eventData.source && { source: eventData.source }),
+        ...(eventData.userId && { userId: eventData.userId }),
+        ...(eventData.sessionId && { sessionId: eventData.sessionId }),
         metadata: eventData.metadata ? JSON.stringify(eventData.metadata) : null,
       },
     })

@@ -223,13 +223,14 @@ function aggregateByTimeScale(moments: any[], timeScale: string) {
       case 'week':
         const weekStart = new Date(date);
         weekStart.setDate(date.getDate() - date.getDay());
-        key = weekStart.toISOString().split('T')[0];
+        key = weekStart.toISOString().split('T')[0] || `${weekStart.getFullYear()}-${String(weekStart.getMonth() + 1).padStart(2, '0')}-${String(weekStart.getDate()).padStart(2, '0')}`;
         break;
       case 'day':
-        key = date.toISOString().split('T')[0];
+        key = date.toISOString().split('T')[0] || `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         break;
       case 'hour':
-        key = `${date.toISOString().split('T')[0]}-${String(date.getHours()).padStart(2, '0')}`;
+        const dayKey = date.toISOString().split('T')[0] || `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        key = `${dayKey}-${String(date.getHours()).padStart(2, '0')}`;
         break;
       default:
         key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -296,7 +297,7 @@ export async function POST(request: NextRequest) {
       data: {
         userId: session.user.id,
         startTime: start,
-        endTime: end,
+        endTime: end || undefined,
         dedication,
         isPublic: isPublic ?? false,
         tags: tags || []

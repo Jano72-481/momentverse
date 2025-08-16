@@ -18,6 +18,11 @@ export async function POST(request: NextRequest) {
 
   let event
 
+  if (!stripe) {
+    console.error('Stripe not configured')
+    return NextResponse.json({ error: 'Payment processing not available' }, { status: 503 })
+  }
+
   try {
     event = stripe.webhooks.constructEvent(
       body,

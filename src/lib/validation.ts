@@ -128,7 +128,7 @@ export const validateRequest = <T>(schema: z.ZodSchema<T>, data: unknown): { suc
   } catch (error) {
     if (error instanceof z.ZodError) {
       const firstError = error.errors[0]
-      return { success: false, error: firstError.message }
+      return { success: false, error: firstError?.message || 'Validation failed' }
     }
     return { success: false, error: 'Validation failed' }
   }
