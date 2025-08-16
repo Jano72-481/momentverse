@@ -268,7 +268,7 @@ export async function POST(request: NextRequest) {
     }
     
     const body = await request.json();
-    const { startTime, endTime, dedication, isPublic, tags } = body;
+    const { startTime, endTime, dedication, isPublic } = body;
     
     // Validate required fields
     if (!startTime || !dedication) {
@@ -299,8 +299,7 @@ export async function POST(request: NextRequest) {
         startTime: start,
         ...(end && { endTime: end }),
         dedication,
-        isPublic: isPublic ?? false,
-        tags: tags || []
+        isPublic: isPublic ?? false
       },
       include: {
         user: {
