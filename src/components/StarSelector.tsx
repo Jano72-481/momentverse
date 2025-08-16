@@ -18,9 +18,12 @@ export default function StarSelector({ onPick }: Props) {
   };
 
   const handleRandom = () => {
+    if (stars.length === 0) return;
     const randomStar = stars[Math.floor(Math.random() * stars.length)];
-    setSelectedStar(randomStar.id);
-    onPick(randomStar.id);
+    if (randomStar) {
+      setSelectedStar(randomStar.id);
+      onPick(randomStar.id);
+    }
   };
 
   return (
