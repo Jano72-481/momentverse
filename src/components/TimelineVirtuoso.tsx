@@ -96,7 +96,7 @@ export default function TimelineVirtuoso({
       if (!groups[key]) {
         groups[key] = [];
       }
-      groups[key].push(moment);
+      groups[key]!.push(moment);
     });
     
     return Object.entries(groups)
