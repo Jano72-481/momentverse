@@ -388,6 +388,7 @@ export default function TimelineOptimized({ className = '', showToday = true, ti
             >
               {rowVirtualizer.getVirtualItems().map((virtualRow) => {
                 const moment = sortedData[virtualRow.index];
+                if (!moment) return null;
                 return (
                   <div
                     key={moment.topId}
