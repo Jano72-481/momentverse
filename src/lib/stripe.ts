@@ -1,26 +1,26 @@
 import Stripe from 'stripe';
 
 // Development-friendly Stripe configuration
-let stripe: Stripe | null = null;
+let stripeInstance: Stripe | null = null;
 
 export function getStripe() {
-  if (!stripe) {
+  if (!stripeInstance) {
     const secretKey = process.env.STRIPE_SECRET_KEY;
     
     if (secretKey && !secretKey.includes('your-stripe-secret-key')) {
-      stripe = new Stripe(secretKey, {
+      stripeInstance = new Stripe(secretKey, {
         apiVersion: '2023-10-16',
       });
     } else {
       console.warn('⚠️ Stripe not configured - using mock mode for development');
-      stripe = null;
+      stripeInstance = null;
     }
   }
-  return stripe;
+  return stripeInstance;
 }
 
 // Export stripe instance for compatibility
-export { stripe };
+export const stripe = getStripe();
 
 // Mock payment functions for development
 export async function createMockPaymentIntent(amount: number) {
