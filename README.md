@@ -12,6 +12,7 @@ A revolutionary platform that allows users to dedicate moments in time to eterni
 - Email verification system (ready for production)
 - Protected routes with middleware
 - Session management with NextAuth.js
+- 
 
 **🎨 Enhanced User Experience**
 - Stunning cosmic UI with animated star field
