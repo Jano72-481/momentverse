@@ -68,8 +68,8 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: process.env.GOOGLE_VERIFICATION,
-    yandex: process.env.YANDEX_VERIFICATION,
+    ...(process.env.GOOGLE_VERIFICATION && { google: process.env.GOOGLE_VERIFICATION }),
+    ...(process.env.YANDEX_VERIFICATION && { yandex: process.env.YANDEX_VERIFICATION }),
   },
   alternates: {
     canonical: 'https://momentverse.com',
