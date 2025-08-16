@@ -78,32 +78,36 @@ export default function Testimonials() {
         <div className="relative max-w-4xl mx-auto">
           {/* Main testimonial */}
           <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-gray-700 rounded-2xl p-8 md:p-12 text-center">
-            <div className="mb-8">
-              <div className="flex justify-center mb-6">
-                {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                  <span key={i} className="text-yellow-400 text-xl">⭐</span>
-                ))}
-              </div>
-              <blockquote className="text-xl md:text-2xl text-white leading-relaxed italic">
-                "{testimonials[currentIndex].quote}"
-              </blockquote>
-            </div>
+            {testimonials[currentIndex] && (
+              <>
+                <div className="mb-8">
+                  <div className="flex justify-center mb-6">
+                    {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
+                      <span key={i} className="text-yellow-400 text-xl">⭐</span>
+                    ))}
+                  </div>
+                  <blockquote className="text-xl md:text-2xl text-white leading-relaxed italic">
+                    "{testimonials[currentIndex].quote}"
+                  </blockquote>
+                </div>
 
-            <div className="flex items-center justify-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-lg">
-                  {testimonials[currentIndex].avatar}
-                </span>
-              </div>
-              <div className="text-left">
-                <div className="text-white font-semibold text-lg">
-                  {testimonials[currentIndex].name}
+                <div className="flex items-center justify-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">
+                      {testimonials[currentIndex].avatar}
+                    </span>
+                  </div>
+                  <div className="text-left">
+                    <div className="text-white font-semibold text-lg">
+                      {testimonials[currentIndex].name}
+                    </div>
+                    <div className="text-gray-400">
+                      {testimonials[currentIndex].role}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-gray-400">
-                  {testimonials[currentIndex].role}
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
 
           {/* Navigation buttons */}
