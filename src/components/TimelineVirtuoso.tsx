@@ -189,7 +189,10 @@ export default function TimelineVirtuoso({
     const scales: TimeScale[] = ['hour', 'day', 'week', 'month', 'year', 'decade', 'century', 'millennium', 'max'];
     const currentIndex = scales.indexOf(timeScale);
     if (currentIndex > 0) {
-      setTimeScale(scales[currentIndex - 1]);
+      const newTimeScale = scales[currentIndex - 1];
+      if (newTimeScale) {
+        setTimeScale(newTimeScale);
+      }
     }
   }, [timeScale]);
 
@@ -197,7 +200,10 @@ export default function TimelineVirtuoso({
     const scales: TimeScale[] = ['hour', 'day', 'week', 'month', 'year', 'decade', 'century', 'millennium', 'max'];
     const currentIndex = scales.indexOf(timeScale);
     if (currentIndex < scales.length - 1) {
-      setTimeScale(scales[currentIndex + 1]);
+      const newTimeScale = scales[currentIndex + 1];
+      if (newTimeScale) {
+        setTimeScale(newTimeScale);
+      }
     }
   }, [timeScale]);
 
