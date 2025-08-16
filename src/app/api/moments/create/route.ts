@@ -48,8 +48,8 @@ export async function POST(request: NextRequest) {
     // 4. Calculate and validate price
     const basePrice = 299 // $2.99 in cents
     const priceValidation = validatePrice(basePrice, {
-      star: hasStarAddon,
-      premium: hasPremiumCert
+      star: hasStarAddon ?? false,
+      premium: hasPremiumCert ?? false
     })
 
     if (!priceValidation.valid) {
@@ -97,6 +97,13 @@ export async function POST(request: NextRequest) {
     const { moment, order } = result
 
     // 7. Create Stripe checkout session
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Payment processing not available' },
+        { status: 503 }
+      )
+    }
+    
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
