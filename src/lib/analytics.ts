@@ -31,8 +31,8 @@ export const trackPageView = async (page: string, userId?: string, sessionId?: s
   await trackEvent({
     event: 'page_view',
     metadata: { page },
-    userId,
-    sessionId,
+    ...(userId && { userId }),
+    ...(sessionId && { sessionId }),
   })
 }
 
@@ -41,8 +41,8 @@ export const trackFormSubmission = async (formName: string, userId?: string, ses
   await trackEvent({
     event: 'form_submission',
     metadata: { formName },
-    userId,
-    sessionId,
+    ...(userId && { userId }),
+    ...(sessionId && { sessionId }),
   })
 }
 
@@ -77,7 +77,7 @@ export const trackSocialShare = async (platform: string, momentId: string, userI
   await trackEvent({
     event: 'social_share',
     source: platform,
-    userId,
+    ...(userId && { userId }),
     metadata: {
       momentId,
       platform,
@@ -100,7 +100,7 @@ export const trackCertificateDownload = async (momentId: string, userId: string)
 export const trackUserRegistration = async (userId: string, source?: string) => {
   await trackEvent({
     event: 'user_registration',
-    source,
+    ...(source && { source }),
     userId,
   })
 }
@@ -120,8 +120,8 @@ export const trackUserLogin = async (userId: string, method: string = 'credentia
 export const trackFormFill = async (source?: string, userId?: string) => {
   await trackEvent({
     event: 'form_fill',
-    source,
-    userId,
+    ...(source && { source }),
+    ...(userId && { userId }),
     metadata: { timestamp: new Date().toISOString() }
   })
 }
@@ -131,7 +131,7 @@ export const trackTikTokClick = async (source: string, userId?: string) => {
   await trackEvent({
     event: 'tiktok_click',
     source: 'tiktok',
-    userId,
+    ...(userId && { userId }),
     metadata: { source }
   })
 }
