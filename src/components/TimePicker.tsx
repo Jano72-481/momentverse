@@ -146,7 +146,7 @@ function TimeOfDaySelector({
   const confirm = () => {
     const [h, m] = time.split(':').map(Number);
     const dt = new Date(baseDate);
-    dt.setHours(h, m, 0, 0);
+    dt.setHours(h || 12, m || 0, 0, 0);
     onDone(dt);
   };
 

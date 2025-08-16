@@ -372,8 +372,10 @@ export default function Timeline({ className = '', showToday = true, timeScale: 
     const currentIndex = scales.indexOf(timeScale);
     if (currentIndex > 0) {
       const newTimeScale = scales[currentIndex - 1];
-      setTimeScale(newTimeScale);
-      onTimeScaleChange?.(newTimeScale);
+      if (newTimeScale) {
+        setTimeScale(newTimeScale);
+        onTimeScaleChange?.(newTimeScale);
+      }
     }
   }, [timeScale, setTimeScale, onTimeScaleChange]);
 
@@ -382,8 +384,10 @@ export default function Timeline({ className = '', showToday = true, timeScale: 
     const currentIndex = scales.indexOf(timeScale);
     if (currentIndex < scales.length - 1) {
       const newTimeScale = scales[currentIndex + 1];
-      setTimeScale(newTimeScale);
-      onTimeScaleChange?.(newTimeScale);
+      if (newTimeScale) {
+        setTimeScale(newTimeScale);
+        onTimeScaleChange?.(newTimeScale);
+      }
     }
   }, [timeScale, setTimeScale, onTimeScaleChange]);
 
