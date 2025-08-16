@@ -14,6 +14,11 @@ export async function POST(request: NextRequest) {
 
   let event
 
+  if (!stripe) {
+    console.error('Stripe not configured')
+    return NextResponse.json({ error: 'Payment processing not available' }, { status: 503 })
+  }
+
   try {
     event = stripe.webhooks.constructEvent(
       body,
@@ -77,9 +82,9 @@ export async function POST(request: NextRequest) {
         momentId: order.moment.id,
         startTime: order.moment.startTime,
         endTime: order.moment.endTime,
-        dedication: order.moment.dedication || undefined,
+        ...(order.moment.dedication && { dedication: order.moment.dedication }),
         userName: order.moment.user.name || order.moment.user.email,
-        starName: order.moment.star?.name,
+        ...(order.moment.star?.name && { starName: order.moment.star.name }),
         isPremium: order.hasPremiumCert,
       })
 
