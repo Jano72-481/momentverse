@@ -293,14 +293,19 @@ export async function POST(request: NextRequest) {
     }
     
     // Create moment
+    const momentData: any = {
+      userId: session.user.id,
+      startTime: start,
+      dedication,
+      isPublic: isPublic ?? false
+    };
+    
+    if (end) {
+      momentData.endTime = end;
+    }
+    
     const moment = await prisma.moment.create({
-      data: {
-        userId: session.user.id,
-        startTime: start,
-        ...(end && { endTime: end }),
-        dedication,
-        isPublic: isPublic ?? false
-      },
+      data: momentData,
       include: {
         user: {
           select: {
