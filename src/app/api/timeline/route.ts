@@ -297,7 +297,7 @@ export async function POST(request: NextRequest) {
       data: {
         userId: session.user.id,
         startTime: start,
-        endTime: end || undefined,
+        ...(end && { endTime: end }),
         dedication,
         isPublic: isPublic ?? false,
         tags: tags || []
