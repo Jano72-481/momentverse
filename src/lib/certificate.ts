@@ -361,8 +361,8 @@ export async function generateAndSaveCertificate(momentId: string): Promise<stri
       dedication: moment.dedication || 'A special moment dedicated to eternity',
       hasStarAddon: moment.hasStarAddon,
       hasPremiumCert: moment.hasPremiumCert,
-      userName: moment.user?.name || undefined,
-      starName
+      ...(moment.user?.name && { userName: moment.user.name }),
+      ...(starName && { starName })
     }
 
     const pdfBuffer = await generateCertificate(certificateData)
