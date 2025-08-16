@@ -9,7 +9,6 @@ export function redis() {
         maxRetriesPerRequest: 3,
         enableAutoPipelining: true,
         lazyConnect: true,
-        retryDelayOnFailover: 100,
       });
     } else {
       // Fallback for development without Redis
