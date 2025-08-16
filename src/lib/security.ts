@@ -100,7 +100,10 @@ export const getClientIP = (request: NextRequest): string => {
   const cfConnectingIP = request.headers.get('cf-connecting-ip')
   
   if (forwarded) {
-    return forwarded.split(',')[0].trim()
+    const parts = forwarded.split(',')
+    if (parts.length > 0) {
+      return parts[0].trim()
+    }
   }
   
   if (realIP) {
