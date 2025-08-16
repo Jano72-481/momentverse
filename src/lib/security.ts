@@ -101,7 +101,7 @@ export const getClientIP = (request: NextRequest): string => {
   
   if (forwarded) {
     const parts = forwarded.split(',')
-    if (parts.length > 0) {
+    if (parts.length > 0 && parts[0]) {
       return parts[0].trim()
     }
   }
