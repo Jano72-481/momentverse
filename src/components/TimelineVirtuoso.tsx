@@ -107,7 +107,7 @@ export default function TimelineVirtuoso({
         totalMoments: moments.length,
         starCount: moments.filter(m => m.star).length,
         topMoment: moments.reduce((prev, current) => 
-          (current.count || 0) > (prev.count || 0) ? current : prev, moments[0]
+          (current.count || 0) > (prev?.count || 0) ? current : prev, moments[0]
         )
       }));
   }, [moments, timeScale]);
