@@ -19,6 +19,9 @@ export function getStripe() {
   return stripe;
 }
 
+// Export stripe instance for compatibility
+export { stripe };
+
 // Mock payment functions for development
 export async function createMockPaymentIntent(amount: number) {
   if (process.env.NODE_ENV === 'development') {
