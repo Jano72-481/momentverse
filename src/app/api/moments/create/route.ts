@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db'
 import { stripe } from '@/lib/stripe'
 import { formatPrice } from '@/lib/utils'
 import { authOptions } from '@/lib/auth'
-import { trackFormFill, trackTikTokClick } from '@/lib/analytics'
+
 import { momentSchema, validateRequest, validateTimeRange, validatePrice, sanitizeInput } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
@@ -161,11 +161,7 @@ export async function POST(request: NextRequest) {
       data: { stripeSessionId: stripeSession.id },
     })
 
-    // 9. Track analytics events
-    await Promise.all([
-      trackFormFill('direct', userId),
-      trackTikTokClick('moment_creation', userId)
-    ]).catch(console.error) // Don't fail if analytics fail
+
 
     // 10. Return success response
     return NextResponse.json({
