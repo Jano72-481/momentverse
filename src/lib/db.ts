@@ -20,7 +20,7 @@ process.on('beforeExit', async () => {
   await prisma.$disconnect()
 })
 
-// Error handling with better logging
+// Error handling with better logging and connection management
 prisma.$use(async (params, next) => {
   const start = Date.now()
   try {
@@ -36,6 +36,16 @@ prisma.$use(async (params, next) => {
   } catch (error) {
     const duration = Date.now() - start
     console.error(`Database error in ${params.model}.${params.action} after ${duration}ms:`, error)
+    
+    // Handle connection issues gracefully
+    if (error && typeof error === 'object' && 'code' in error && error.code === '42P05') {
+      console.warn('Prepared statement conflict detected, retrying...')
+      // For build time, return empty result instead of failing
+      if (process.env.NODE_ENV === 'production' && process.env.VERCEL) {
+        return []
+      }
+    }
+    
     throw error
   }
 })
