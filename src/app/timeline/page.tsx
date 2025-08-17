@@ -169,8 +169,8 @@ export default function TimelinePage() {
           Explore the Timeline
         </h1>
         <p className="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
-          Journey through time and discover moments that shaped history, from the dawn of civilization 
-          to the present day. Navigate through 12,000+ years of human experience with our enhanced timeline.
+          Journey through time and discover moments that shaped history, from the beginning of recorded civilization 
+          to the present day. Navigate through 5,400+ years of human experience with our enhanced timeline.
         </p>
       </div>
 
@@ -345,43 +345,39 @@ export default function TimelinePage() {
 
       {/* Enhanced Historical Context */}
       <div className="mt-16 bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-lg border border-slate-700 p-8">
-        <h2 className="text-2xl font-semibold text-slate-200 mb-4">12,000 Years of Human History</h2>
+        <h2 className="text-2xl font-semibold text-slate-200 mb-4">5,400 Years of Recorded History</h2>
         <div className="grid md:grid-cols-2 gap-8">
           <div>
             <h3 className="text-lg font-semibold text-slate-200 mb-3">From Ancient Civilizations to Today</h3>
             <p className="text-slate-400 mb-4 leading-relaxed">
-              Our enhanced timeline spans from the dawn of agriculture around 10,000 BCE to the present day, 
+              Our enhanced timeline spans from the beginning of recorded history around 3300 BCE to the present day, 
               covering the rise and fall of empires, scientific discoveries, cultural revolutions, 
               and personal moments that shaped our world.
             </p>
             <ul className="space-y-2 text-sm text-slate-400">
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                Agricultural Revolution (10,000 BCE)
+                Ancient Civilizations (3300 BCE - 500 BCE)
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                First Cities (3500 BCE)
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                 Classical Antiquity (500 BCE - 500 CE)
               </li>
               <li className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                 Middle Ages (500 - 1500 CE)
               </li>
               <li className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
                 Age of Discovery (1400 - 1800 CE)
               </li>
               <li className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                 Industrial Revolution (1760 - 1840 CE)
               </li>
               <li className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
-                Modern Era (1900 - Present)
+                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                Modern Era (1900 - 2100 CE)
               </li>
             </ul>
           </div>

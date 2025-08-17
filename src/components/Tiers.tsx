@@ -5,7 +5,7 @@ export default function Tiers() {
   const tiers = [
     {
       name: 'Basic Moment',
-      price: '$2.99',
+      price: '$4.99',
       description: 'Perfect for getting started',
       features: [
         'Standard dot on the timeline',
@@ -19,7 +19,7 @@ export default function Tiers() {
     },
     {
       name: 'Premium Moment',
-      price: '$9.99',
+      price: '$13.99',
       description: 'For those who want the full experience',
       features: [
         'Colored dot of your choice',
