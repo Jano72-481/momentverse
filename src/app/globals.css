@@ -7,15 +7,16 @@
   box-sizing: border-box;
 }
 
-/* Elegant Background System - Seamless Harmony */
+/* Refined Elegant Background System - Seamless Harmony */
 .night-sky-bg {
   background: linear-gradient(180deg, 
     #0a0a0f 0%, 
-    #0f0f1a 15%, 
-    #1a1a2e 35%, 
-    #16213e 55%, 
-    #1a1a2e 75%, 
-    #0f0f1a 90%, 
+    #0f0f1a 12%, 
+    #1a1a2e 28%, 
+    #16213e 44%, 
+    #1a1a2e 60%, 
+    #0f0f1a 76%, 
+    #0a0a0f 92%, 
     #0a0a0f 100%
   );
   background-attachment: fixed;
@@ -32,21 +33,23 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.12) 0%, transparent 75%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.12) 0%, transparent 75%),
-    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.08) 0%, transparent 75%),
-    radial-gradient(circle at 60% 60%, rgba(255, 183, 197, 0.06) 0%, transparent 75%);
+    radial-gradient(circle at 25% 75%, rgba(120, 119, 198, 0.08) 0%, transparent 70%),
+    radial-gradient(circle at 75% 25%, rgba(255, 119, 198, 0.08) 0%, transparent 70%),
+    radial-gradient(circle at 45% 45%, rgba(120, 219, 255, 0.06) 0%, transparent 70%),
+    radial-gradient(circle at 55% 55%, rgba(255, 183, 197, 0.04) 0%, transparent 70%);
   pointer-events: none;
   will-change: opacity;
+  opacity: 0.8;
 }
 
 .night-sky-solid {
   background: linear-gradient(180deg, 
     #0f0f1a 0%, 
-    #1a1a2e 20%, 
-    #16213e 40%, 
-    #1a1a2e 60%, 
-    #0f0f1a 80%, 
+    #1a1a2e 18%, 
+    #16213e 36%, 
+    #1a1a2e 54%, 
+    #0f0f1a 72%, 
+    #0a0a0f 90%, 
     #0a0a0f 100%
   );
   position: relative;
@@ -62,20 +65,21 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.08) 0%, transparent 80%),
-    radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.06) 0%, transparent 80%),
-    radial-gradient(circle at 70% 30%, rgba(120, 219, 255, 0.04) 0%, transparent 80%);
+    radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.06) 0%, transparent 75%),
+    radial-gradient(circle at 35% 65%, rgba(255, 119, 198, 0.04) 0%, transparent 75%),
+    radial-gradient(circle at 65% 35%, rgba(120, 219, 255, 0.03) 0%, transparent 75%);
   pointer-events: none;
   will-change: opacity;
+  opacity: 0.7;
 }
 
 .night-sky-alt {
   background: linear-gradient(180deg, 
     #0f0f1a 0%, 
-    #1a1a2e 25%, 
-    #16213e 45%, 
-    #1a1a2e 65%, 
-    #0f0f1a 85%, 
+    #1a1a2e 20%, 
+    #16213e 40%, 
+    #1a1a2e 60%, 
+    #0f0f1a 80%, 
     #0a0a0f 100%
   );
   position: relative;
@@ -91,22 +95,24 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.08) 0%, transparent 80%),
-    radial-gradient(circle at 70% 30%, rgba(120, 219, 255, 0.06) 0%, transparent 80%),
-    radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.04) 0%, transparent 80%);
+    radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.06) 0%, transparent 75%),
+    radial-gradient(circle at 70% 30%, rgba(120, 219, 255, 0.04) 0%, transparent 75%),
+    radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.03) 0%, transparent 75%);
   pointer-events: none;
   will-change: opacity;
+  opacity: 0.6;
 }
 
 /* Enhanced Space Gradient for Tailwind */
 .space-gradient {
   background: linear-gradient(180deg, 
     #0a0a0f 0%, 
-    #0f0f1a 15%, 
-    #1a1a2e 35%, 
-    #16213e 55%, 
-    #1a1a2e 75%, 
-    #0f0f1a 90%, 
+    #0f0f1a 12%, 
+    #1a1a2e 28%, 
+    #16213e 44%, 
+    #1a1a2e 60%, 
+    #0f0f1a 76%, 
+    #0a0a0f 92%, 
     #0a0a0f 100%
   );
   background-attachment: fixed;
@@ -123,43 +129,52 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.12) 0%, transparent 75%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.12) 0%, transparent 75%),
-    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.08) 0%, transparent 75%),
-    radial-gradient(circle at 60% 60%, rgba(255, 183, 197, 0.06) 0%, transparent 75%);
+    radial-gradient(circle at 25% 75%, rgba(120, 119, 198, 0.08) 0%, transparent 70%),
+    radial-gradient(circle at 75% 25%, rgba(255, 119, 198, 0.08) 0%, transparent 70%),
+    radial-gradient(circle at 45% 45%, rgba(120, 219, 255, 0.06) 0%, transparent 70%),
+    radial-gradient(circle at 55% 55%, rgba(255, 183, 197, 0.04) 0%, transparent 70%);
   pointer-events: none;
   will-change: opacity;
+  opacity: 0.8;
 }
 
-/* Elegant Section Transitions */
+/* Refined Elegant Section Transitions */
 .section-transition {
   position: relative;
+}
+
+.section-padding {
+  @apply py-20 px-4;
 }
 
 .section-transition::after {
   content: '';
   position: absolute;
-  bottom: -60px;
+  bottom: -80px;
   left: 0;
   right: 0;
-  height: 120px;
+  height: 160px;
   background: linear-gradient(180deg, 
     transparent 0%, 
-    rgba(10, 10, 15, 0.15) 30%, 
-    rgba(10, 10, 15, 0.4) 70%, 
-    rgba(10, 10, 15, 0.8) 100%
+    rgba(10, 10, 15, 0.08) 20%, 
+    rgba(10, 10, 15, 0.25) 50%, 
+    rgba(10, 10, 15, 0.6) 80%, 
+    rgba(10, 10, 15, 0.9) 100%
   );
   pointer-events: none;
   z-index: 1;
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(2px);
 }
 
-/* Glass Card Effect */
+/* Enhanced Glass Card Effect */
 .glass-card {
-  background: rgba(30, 41, 59, 0.15);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(71, 85, 105, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: rgba(30, 41, 59, 0.12);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(71, 85, 105, 0.15);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   position: relative;
   overflow: hidden;
 }
@@ -172,30 +187,99 @@
   right: 0;
   bottom: 0;
   background: linear-gradient(135deg, 
-    rgba(120, 119, 198, 0.05) 0%, 
-    rgba(255, 119, 198, 0.03) 50%, 
-    rgba(120, 219, 255, 0.05) 100%
+    rgba(120, 119, 198, 0.03) 0%, 
+    rgba(255, 119, 198, 0.02) 50%, 
+    rgba(120, 219, 255, 0.03) 100%
   );
   pointer-events: none;
   z-index: -1;
 }
 
-/* Optimized Input Styles */
+/* Refined Input Styles */
 .input-primary {
-  @apply w-full px-4 py-3 bg-slate-800/20 border border-slate-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-200 backdrop-blur-sm;
-  background: rgba(30, 41, 59, 0.2);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(71, 85, 105, 0.2);
+  @apply w-full px-4 py-3 bg-slate-800/15 border border-slate-600/25 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-transparent transition-all duration-200 backdrop-blur-sm;
+  background: rgba(30, 41, 59, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(71, 85, 105, 0.15);
   will-change: transform, box-shadow;
 }
 
 /* Input with icon spacing */
 .input-with-icon {
-  @apply w-full px-4 py-3 pl-12 pr-4 bg-slate-800/20 border border-slate-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-200 backdrop-blur-sm;
-  background: rgba(30, 41, 59, 0.2);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(71, 85, 105, 0.2);
+  @apply w-full px-4 py-3 pl-12 pr-4 bg-slate-800/15 border border-slate-600/25 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-transparent transition-all duration-200 backdrop-blur-sm;
+  background: rgba(30, 41, 59, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(71, 85, 105, 0.15);
   will-change: transform, box-shadow;
+}
+
+/* Refined Personalize Section Background - Eliminates Blockiness */
+.personalize-bg {
+  background: linear-gradient(180deg, 
+    #0f0f1a 0%, 
+    #1a1a2e 15%, 
+    #16213e 30%, 
+    #1a1a2e 45%, 
+    #0f0f1a 60%, 
+    #0a0a0f 75%, 
+    #0a0a0f 100%
+  );
+  position: relative;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.personalize-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 40% 60%, rgba(120, 119, 198, 0.04) 0%, transparent 80%),
+    radial-gradient(circle at 60% 40%, rgba(255, 119, 198, 0.03) 0%, transparent 80%),
+    radial-gradient(circle at 50% 50%, rgba(120, 219, 255, 0.02) 0%, transparent 80%);
+  pointer-events: none;
+  will-change: opacity;
+  opacity: 0.5;
+}
+
+/* Seamless Homepage Background System */
+.homepage-bg {
+  background: linear-gradient(180deg, 
+    #0a0a0f 0%, 
+    #0f0f1a 8%, 
+    #1a1a2e 20%, 
+    #16213e 32%, 
+    #1a1a2e 44%, 
+    #0f0f1a 56%, 
+    #1a1a2e 68%, 
+    #16213e 80%, 
+    #0f0f1a 92%, 
+    #0a0a0f 100%
+  );
+  background-attachment: fixed;
+  position: relative;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.homepage-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.06) 0%, transparent 85%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.06) 0%, transparent 85%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.04) 0%, transparent 85%),
+    radial-gradient(circle at 60% 60%, rgba(255, 183, 197, 0.03) 0%, transparent 85%);
+  pointer-events: none;
+  will-change: opacity;
+  opacity: 0.6;
 }
 
 .input-primary:focus {

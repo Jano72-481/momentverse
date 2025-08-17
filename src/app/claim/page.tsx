@@ -3,7 +3,7 @@ import StarField from '@/components/StarField';
 
 export default function ClaimPage() {
   return (
-    <main className="relative min-h-screen night-sky-bg flex items-center justify-center py-20">
+    <main className="relative min-h-screen personalize-bg flex items-center justify-center py-20">
       <StarField />
       <div className="relative z-10 max-w-2xl w-full mx-auto px-4">
         <div className="glass-card p-8 shadow-2xl">
