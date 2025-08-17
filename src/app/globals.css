@@ -7,15 +7,16 @@
   box-sizing: border-box;
 }
 
-/* Balanced Background System - Harmonious Equilibrium */
+/* Elegant Background System - Seamless Harmony */
 .night-sky-bg {
   background: linear-gradient(180deg, 
     #0a0a0f 0%, 
-    #0f0f1a 20%, 
-    #1a1a2e 40%, 
-    #16213e 60%, 
-    #1a1a2e 80%, 
-    #0f0f1a 100%
+    #0f0f1a 15%, 
+    #1a1a2e 35%, 
+    #16213e 55%, 
+    #1a1a2e 75%, 
+    #0f0f1a 90%, 
+    #0a0a0f 100%
   );
   background-attachment: fixed;
   position: relative;
@@ -31,10 +32,10 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 70%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 70%),
-    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 70%),
-    radial-gradient(circle at 60% 60%, rgba(255, 183, 197, 0.08) 0%, transparent 70%);
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.12) 0%, transparent 75%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.12) 0%, transparent 75%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.08) 0%, transparent 75%),
+    radial-gradient(circle at 60% 60%, rgba(255, 183, 197, 0.06) 0%, transparent 75%);
   pointer-events: none;
   will-change: opacity;
 }
@@ -42,10 +43,11 @@
 .night-sky-solid {
   background: linear-gradient(180deg, 
     #0f0f1a 0%, 
-    #1a1a2e 25%, 
-    #16213e 50%, 
-    #1a1a2e 75%, 
-    #0f0f1a 100%
+    #1a1a2e 20%, 
+    #16213e 40%, 
+    #1a1a2e 60%, 
+    #0f0f1a 80%, 
+    #0a0a0f 100%
   );
   position: relative;
   will-change: transform;
@@ -60,19 +62,21 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.06) 0%, transparent 80%),
-    radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.04) 0%, transparent 80%);
+    radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.08) 0%, transparent 80%),
+    radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.06) 0%, transparent 80%),
+    radial-gradient(circle at 70% 30%, rgba(120, 219, 255, 0.04) 0%, transparent 80%);
   pointer-events: none;
   will-change: opacity;
 }
 
 .night-sky-alt {
   background: linear-gradient(180deg, 
-    #0f0f23 0%, 
-    #1a1a2e 30%, 
-    #16213e 50%, 
-    #1a1a2e 70%, 
-    #0f0f23 100%
+    #0f0f1a 0%, 
+    #1a1a2e 25%, 
+    #16213e 45%, 
+    #1a1a2e 65%, 
+    #0f0f1a 85%, 
+    #0a0a0f 100%
   );
   position: relative;
   will-change: transform;
@@ -87,8 +91,9 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.06) 0%, transparent 80%),
-    radial-gradient(circle at 70% 30%, rgba(120, 219, 255, 0.04) 0%, transparent 80%);
+    radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.08) 0%, transparent 80%),
+    radial-gradient(circle at 70% 30%, rgba(120, 219, 255, 0.06) 0%, transparent 80%),
+    radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.04) 0%, transparent 80%);
   pointer-events: none;
   will-change: opacity;
 }
@@ -97,11 +102,12 @@
 .space-gradient {
   background: linear-gradient(180deg, 
     #0a0a0f 0%, 
-    #0f0f1a 20%, 
-    #1a1a2e 40%, 
-    #16213e 60%, 
-    #1a1a2e 80%, 
-    #0f0f1a 100%
+    #0f0f1a 15%, 
+    #1a1a2e 35%, 
+    #16213e 55%, 
+    #1a1a2e 75%, 
+    #0f0f1a 90%, 
+    #0a0a0f 100%
   );
   background-attachment: fixed;
   position: relative;
@@ -117,15 +123,15 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 70%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 70%),
-    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.06) 0%, transparent 70%),
-    radial-gradient(circle at 60% 60%, rgba(255, 183, 197, 0.04) 0%, transparent 70%);
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.12) 0%, transparent 75%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.12) 0%, transparent 75%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.08) 0%, transparent 75%),
+    radial-gradient(circle at 60% 60%, rgba(255, 183, 197, 0.06) 0%, transparent 75%);
   pointer-events: none;
   will-change: opacity;
 }
 
-/* Smooth Section Transitions */
+/* Elegant Section Transitions */
 .section-transition {
   position: relative;
 }
@@ -133,17 +139,45 @@
 .section-transition::after {
   content: '';
   position: absolute;
-  bottom: -50px;
+  bottom: -60px;
   left: 0;
   right: 0;
-  height: 100px;
+  height: 120px;
   background: linear-gradient(180deg, 
     transparent 0%, 
-    rgba(10, 10, 15, 0.2) 50%, 
-    rgba(10, 10, 15, 0.6) 100%
+    rgba(10, 10, 15, 0.15) 30%, 
+    rgba(10, 10, 15, 0.4) 70%, 
+    rgba(10, 10, 15, 0.8) 100%
   );
   pointer-events: none;
   z-index: 1;
+  backdrop-filter: blur(1px);
+}
+
+/* Glass Card Effect */
+.glass-card {
+  background: rgba(30, 41, 59, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(71, 85, 105, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(120, 119, 198, 0.05) 0%, 
+    rgba(255, 119, 198, 0.03) 50%, 
+    rgba(120, 219, 255, 0.05) 100%
+  );
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Optimized Input Styles */
