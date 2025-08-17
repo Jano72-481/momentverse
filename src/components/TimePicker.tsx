@@ -8,19 +8,15 @@ interface Props {
   onSelect: (dateIso: string) => void;
 }
 
-// Historical periods for context
+// Historical periods for context (3300 BCE - 2100 CE)
 const historicalPeriods = [
-  { start: -10000, end: -8000, name: "Early Agriculture", description: "First farming communities" },
-  { start: -8000, end: -6000, name: "Ancient Civilizations", description: "First cities emerge" },
-  { start: -6000, end: -4000, name: "Bronze Age", description: "Metalworking begins" },
-  { start: -4000, end: -2000, name: "First Empires", description: "Egypt, Mesopotamia, Indus Valley" },
-  { start: -2000, end: 0, name: "Classical Antiquity", description: "Greece, Rome, China" },
-  { start: 0, end: 1000, name: "Early Middle Ages", description: "Byzantine, Islamic Golden Age" },
-  { start: 1000, end: 1500, name: "High Middle Ages", description: "Renaissance begins" },
-  { start: 1500, end: 1800, name: "Age of Discovery", description: "Exploration, Enlightenment" },
-  { start: 1800, end: 1900, name: "Industrial Revolution", description: "Modern era begins" },
-  { start: 1900, end: 2000, name: "Modern Age", description: "Technology revolution" },
-  { start: 2000, end: 2100, name: "Digital Age", description: "Information era" },
+  { start: -3300, end: -500, name: "Ancient Civilizations", description: "Egypt, Babylon, Greece, Rome" },
+  { start: -500, end: 500, name: "Classical Period", description: "Golden ages, major empires" },
+  { start: 500, end: 1500, name: "Medieval", description: "Knights, castles, exploration" },
+  { start: 1500, end: 1700, name: "Renaissance", description: "Art, science, discovery" },
+  { start: 1700, end: 1900, name: "Industrial", description: "Revolution, innovation" },
+  { start: 1900, end: 2024, name: "Modern", description: "Technology, pop culture" },
+  { start: 2024, end: 2100, name: "Future", description: "Planning, legacy" },
 ];
 
 export default function TimePicker({ onSelect }: Props) {
@@ -57,7 +53,7 @@ export default function TimePicker({ onSelect }: Props) {
             }
           }}
           captionLayout="dropdown"
-          fromYear={-10000} // 12,000 years ago - beginning of human civilization
+          fromYear={-3300} // 3300 BCE - beginning of recorded history
           toYear={2100}
           className="mx-auto"
           styles={{

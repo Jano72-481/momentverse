@@ -239,7 +239,7 @@ export function ClaimMomentForm({ onSuccess, startTime: initialStartTime, endTim
                 <div className="text-gray-400 text-sm">Gold border & embossed seal</div>
               </div>
             </div>
-            <div className="text-fuchsia-400 font-semibold">+$4</div>
+            <div className="text-fuchsia-400 font-semibold">+$6</div>
           </label>
         </div>
       </div>

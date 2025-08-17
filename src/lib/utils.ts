@@ -92,11 +92,11 @@ export const calculatePrice = (
   const durationSeconds = Math.max(1, Math.floor(durationMs / 1000))
   const durationMinutes = Math.max(0, Math.floor(durationSeconds / 60) - 1)
   
-  // Base price is now $2.99 (299 cents)
-  const basePrice = 299 // $2.99 in cents
+  // Base price is now $4.99 (499 cents)
+  const basePrice = 499 // $4.99 in cents
   const perMinuteExtra = parseInt(process.env.PER_MINUTE_EXTRA || '0.05') * 100
   const starAddon = parseInt(process.env.STAR_ADDON || '3') * 100 // Keep star addon at $3.00
-  const premiumCertAddon = parseInt(process.env.PREMIUM_CERT_ADDON || '4') * 100 // Premium cert now $4.00 to make total $9.99
+  const premiumCertAddon = parseInt(process.env.PREMIUM_CERT_ADDON || '6') * 100 // Premium cert now $6.00 to make total $10.99
   
   let total = basePrice
   if (durationMinutes > 0) {
