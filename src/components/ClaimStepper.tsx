@@ -52,7 +52,7 @@ export default function ClaimStepper() {
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 40 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <h2 className="text-2xl mb-4 font-bold text-center night-sky-gradient-text">1 · Choose the exact moment</h2>
             <TimePicker onSelect={(d) => { setIso(d); setStep(1); }} />
@@ -64,7 +64,7 @@ export default function ClaimStepper() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <div className="flex items-center mb-4">
               <button onClick={() => setStep(0)} className="mr-2 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
@@ -78,10 +78,10 @@ export default function ClaimStepper() {
         {step === 2 && (
           <motion.div
             key="step3"
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -40 }}
-            transition={{ duration: 0.4 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <div className="flex items-center mb-4">
               <button onClick={() => setStep(1)} className="mr-2 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
@@ -89,13 +89,11 @@ export default function ClaimStepper() {
               </button>
               <h2 className="text-2xl font-bold night-sky-gradient-text">3 · Personalize & Checkout</h2>
             </div>
-            {iso && (
-              <ClaimMomentForm 
-                startTime={iso} 
-                hasStarAddon={!!starId} 
-                onSuccess={() => {}} 
-              />
-            )}
+            <ClaimMomentForm 
+              startTime={iso || new Date().toISOString().slice(0, 16)} 
+              hasStarAddon={!!starId} 
+              onSuccess={() => {}} 
+            />
           </motion.div>
         )}
       </AnimatePresence>

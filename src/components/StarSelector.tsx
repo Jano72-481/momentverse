@@ -14,7 +14,8 @@ export default function StarSelector({ onPick }: Props) {
 
   const handleStarClick = (starId: number) => {
     setSelectedStar(starId);
-    onPick(starId);
+    // Immediate callback to prevent delay
+    setTimeout(() => onPick(starId), 0);
   };
 
   const handleRandom = () => {
@@ -22,7 +23,8 @@ export default function StarSelector({ onPick }: Props) {
     const randomStar = stars[Math.floor(Math.random() * stars.length)];
     if (randomStar) {
       setSelectedStar(randomStar.id);
-      onPick(randomStar.id);
+      // Immediate callback to prevent delay
+      setTimeout(() => onPick(randomStar.id), 0);
     }
   };
 

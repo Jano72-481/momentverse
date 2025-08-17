@@ -190,7 +190,7 @@ export default function SignUpPage() {
                   Full Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
                   <input
                     id="name"
                     type="text"
@@ -199,7 +199,7 @@ export default function SignUpPage() {
                     onChange={handleChange}
                     onKeyPress={handleKeyPress}
                     required
-                    className="input-primary w-full pl-16 pr-4"
+                    className="input-with-icon w-full"
                     placeholder="Enter your full name"
                     autoComplete="name"
                     autoFocus
@@ -213,7 +213,7 @@ export default function SignUpPage() {
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
                   <input
                     id="email"
                     type="email"
@@ -222,7 +222,7 @@ export default function SignUpPage() {
                     onChange={handleChange}
                     onKeyPress={handleKeyPress}
                     required
-                    className="input-primary w-full pl-16 pr-4"
+                    className="input-with-icon w-full"
                     placeholder="Enter your email"
                     autoComplete="email"
                     disabled={isLoading}
@@ -235,7 +235,7 @@ export default function SignUpPage() {
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
                   <input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
@@ -244,7 +244,7 @@ export default function SignUpPage() {
                     onChange={handleChange}
                     onKeyPress={handleKeyPress}
                     required
-                    className="input-primary w-full pl-16 pr-12"
+                    className="input-with-icon w-full pr-12"
                     placeholder="Create a password"
                     autoComplete="new-password"
                     disabled={isLoading}
@@ -288,7 +288,7 @@ export default function SignUpPage() {
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
                   <input
                     id="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
@@ -297,7 +297,7 @@ export default function SignUpPage() {
                     onChange={handleChange}
                     onKeyPress={handleKeyPress}
                     required
-                    className="input-primary w-full pl-16 pr-12"
+                    className="input-with-icon w-full pr-12"
                     placeholder="Confirm your password"
                     autoComplete="new-password"
                     disabled={isLoading}

@@ -155,6 +155,15 @@
   will-change: transform, box-shadow;
 }
 
+/* Input with icon spacing */
+.input-with-icon {
+  @apply w-full px-4 py-3 pl-12 pr-4 bg-slate-800/20 border border-slate-600/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-200 backdrop-blur-sm;
+  background: rgba(30, 41, 59, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(71, 85, 105, 0.2);
+  will-change: transform, box-shadow;
+}
+
 .input-primary:focus {
   @apply bg-slate-800/40 border-blue-500/50;
   background: rgba(30, 41, 59, 0.4);
