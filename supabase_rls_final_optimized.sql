@@ -25,6 +25,13 @@ DROP POLICY IF EXISTS "orders_policy" ON public.orders;
 DROP POLICY IF EXISTS "stars_policy" ON public.stars;
 DROP POLICY IF EXISTS "analytics_policy" ON public.analytics;
 
+-- Drop the new policy names that might already exist
+DROP POLICY IF EXISTS "users_final" ON public.users;
+DROP POLICY IF EXISTS "moments_final" ON public.moments;
+DROP POLICY IF EXISTS "orders_final" ON public.orders;
+DROP POLICY IF EXISTS "stars_final" ON public.stars;
+DROP POLICY IF EXISTS "analytics_final" ON public.analytics;
+
 -- Also drop any old policies that might still exist
 DROP POLICY IF EXISTS "Users can view own profile" ON public.users;
 DROP POLICY IF EXISTS "Users can update own profile" ON public.users;
