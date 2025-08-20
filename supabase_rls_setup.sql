@@ -169,7 +169,7 @@ CREATE INDEX IF NOT EXISTS idx_moments_user_id ON public.moments("userId");
 CREATE INDEX IF NOT EXISTS idx_moments_is_public ON public.moments("isPublic");
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON public.orders("userId");
 CREATE INDEX IF NOT EXISTS idx_analytics_user_id ON public.analytics("userId");
-CREATE INDEX IF NOT EXISTS idx_analytics_session_id ON public.analytics(sessionId);
+CREATE INDEX IF NOT EXISTS idx_analytics_session_id ON public.analytics("sessionId");
 
 -- =====================================================
 -- VERIFICATION QUERIES
