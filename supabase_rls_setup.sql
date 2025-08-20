@@ -82,23 +82,23 @@ CREATE POLICY "Users cannot delete own profile" ON public.users
 
 -- Users can view their own moments
 CREATE POLICY "Users can view own moments" ON public.moments
-    FOR SELECT USING (auth.uid()::text = userId);
+    FOR SELECT USING (auth.uid()::text = "userId");
 
 -- Users can view public moments
 CREATE POLICY "Anyone can view public moments" ON public.moments
-    FOR SELECT USING (isPublic = true);
+    FOR SELECT USING ("isPublic" = true);
 
 -- Users can create their own moments
 CREATE POLICY "Users can create own moments" ON public.moments
-    FOR INSERT WITH CHECK (auth.uid()::text = userId);
+    FOR INSERT WITH CHECK (auth.uid()::text = "userId");
 
 -- Users can update their own moments
 CREATE POLICY "Users can update own moments" ON public.moments
-    FOR UPDATE USING (auth.uid()::text = userId);
+    FOR UPDATE USING (auth.uid()::text = "userId");
 
 -- Users can delete their own moments
 CREATE POLICY "Users can delete own moments" ON public.moments
-    FOR DELETE USING (auth.uid()::text = userId);
+    FOR DELETE USING (auth.uid()::text = "userId");
 
 -- =====================================================
 -- ORDERS TABLE POLICIES
@@ -106,15 +106,15 @@ CREATE POLICY "Users can delete own moments" ON public.moments
 
 -- Users can view their own orders
 CREATE POLICY "Users can view own orders" ON public.orders
-    FOR SELECT USING (auth.uid()::text = userId);
+    FOR SELECT USING (auth.uid()::text = "userId");
 
 -- Users can create their own orders
 CREATE POLICY "Users can create own orders" ON public.orders
-    FOR INSERT WITH CHECK (auth.uid()::text = userId);
+    FOR INSERT WITH CHECK (auth.uid()::text = "userId");
 
 -- Users can update their own orders
 CREATE POLICY "Users can update own orders" ON public.orders
-    FOR UPDATE USING (auth.uid()::text = userId);
+    FOR UPDATE USING (auth.uid()::text = "userId");
 
 -- Users cannot delete orders (for audit trail)
 CREATE POLICY "Users cannot delete orders" ON public.orders
@@ -146,7 +146,7 @@ CREATE POLICY "Users cannot delete stars" ON public.stars
 
 -- Users can view their own analytics
 CREATE POLICY "Users can view own analytics" ON public.analytics
-    FOR SELECT USING (auth.uid()::text = userId OR userId IS NULL);
+    FOR SELECT USING (auth.uid()::text = "userId" OR "userId" IS NULL);
 
 -- Anyone can insert analytics (for tracking)
 CREATE POLICY "Anyone can insert analytics" ON public.analytics
@@ -154,7 +154,7 @@ CREATE POLICY "Anyone can insert analytics" ON public.analytics
 
 -- Only authenticated users can update analytics
 CREATE POLICY "Authenticated users can update analytics" ON public.analytics
-    FOR UPDATE USING (auth.uid()::text = userId);
+    FOR UPDATE USING (auth.uid()::text = "userId");
 
 -- Users cannot delete analytics (for data integrity)
 CREATE POLICY "Users cannot delete analytics" ON public.analytics
@@ -165,10 +165,10 @@ CREATE POLICY "Users cannot delete analytics" ON public.analytics
 -- =====================================================
 
 -- Create indexes for better performance with RLS
-CREATE INDEX IF NOT EXISTS idx_moments_user_id ON public.moments(userId);
-CREATE INDEX IF NOT EXISTS idx_moments_is_public ON public.moments(isPublic);
-CREATE INDEX IF NOT EXISTS idx_orders_user_id ON public.orders(userId);
-CREATE INDEX IF NOT EXISTS idx_analytics_user_id ON public.analytics(userId);
+CREATE INDEX IF NOT EXISTS idx_moments_user_id ON public.moments("userId");
+CREATE INDEX IF NOT EXISTS idx_moments_is_public ON public.moments("isPublic");
+CREATE INDEX IF NOT EXISTS idx_orders_user_id ON public.orders("userId");
+CREATE INDEX IF NOT EXISTS idx_analytics_user_id ON public.analytics("userId");
 CREATE INDEX IF NOT EXISTS idx_analytics_session_id ON public.analytics(sessionId);
 
 -- =====================================================
