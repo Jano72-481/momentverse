@@ -3,12 +3,58 @@
 -- Run this script in your Supabase SQL Editor
 -- =====================================================
 
--- Enable Row Level Security on all tables
+-- First, let's check current RLS status
+SELECT 'Current RLS Status:' as info;
+SELECT 
+    schemaname,
+    tablename,
+    rowsecurity
+FROM pg_tables 
+WHERE schemaname = 'public' 
+AND tablename IN ('users', 'moments', 'orders', 'stars', 'analytics')
+ORDER BY tablename;
+
+-- =====================================================
+-- ENABLE ROW LEVEL SECURITY ON ALL TABLES
+-- =====================================================
+
+-- Enable RLS on all tables
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.moments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.stars ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.analytics ENABLE ROW LEVEL SECURITY;
+
+-- =====================================================
+-- DROP EXISTING POLICIES (if any) TO AVOID CONFLICTS
+-- =====================================================
+
+-- Drop existing policies to avoid conflicts
+DROP POLICY IF EXISTS "Users can view own profile" ON public.users;
+DROP POLICY IF EXISTS "Users can update own profile" ON public.users;
+DROP POLICY IF EXISTS "Users can insert own profile" ON public.users;
+DROP POLICY IF EXISTS "Users cannot delete own profile" ON public.users;
+
+DROP POLICY IF EXISTS "Users can view own moments" ON public.moments;
+DROP POLICY IF EXISTS "Anyone can view public moments" ON public.moments;
+DROP POLICY IF EXISTS "Users can create own moments" ON public.moments;
+DROP POLICY IF EXISTS "Users can update own moments" ON public.moments;
+DROP POLICY IF EXISTS "Users can delete own moments" ON public.moments;
+
+DROP POLICY IF EXISTS "Users can view own orders" ON public.orders;
+DROP POLICY IF EXISTS "Users can create own orders" ON public.orders;
+DROP POLICY IF EXISTS "Users can update own orders" ON public.orders;
+DROP POLICY IF EXISTS "Users cannot delete orders" ON public.orders;
+
+DROP POLICY IF EXISTS "Anyone can view stars" ON public.stars;
+DROP POLICY IF EXISTS "Authenticated users can update star assignment" ON public.stars;
+DROP POLICY IF EXISTS "Authenticated users can insert stars" ON public.stars;
+DROP POLICY IF EXISTS "Users cannot delete stars" ON public.stars;
+
+DROP POLICY IF EXISTS "Users can view own analytics" ON public.analytics;
+DROP POLICY IF EXISTS "Anyone can insert analytics" ON public.analytics;
+DROP POLICY IF EXISTS "Authenticated users can update analytics" ON public.analytics;
+DROP POLICY IF EXISTS "Users cannot delete analytics" ON public.analytics;
 
 -- =====================================================
 -- USERS TABLE POLICIES
@@ -130,24 +176,28 @@ CREATE INDEX IF NOT EXISTS idx_analytics_session_id ON public.analytics(sessionI
 -- =====================================================
 
 -- Check RLS status on all tables
+SELECT 'RLS Status After Setup:' as info;
 SELECT 
     schemaname,
     tablename,
     rowsecurity
 FROM pg_tables 
 WHERE schemaname = 'public' 
-AND tablename IN ('users', 'moments', 'orders', 'stars', 'analytics');
+AND tablename IN ('users', 'moments', 'orders', 'stars', 'analytics')
+ORDER BY tablename;
 
 -- Check policies on all tables
+SELECT 'Policies Created:' as info;
 SELECT 
     schemaname,
     tablename,
     policyname,
     permissive,
     roles,
-    cmd,
-    qual,
-    with_check
+    cmd
 FROM pg_policies 
 WHERE schemaname = 'public'
 ORDER BY tablename, policyname;
+
+-- Final verification
+SELECT 'Security Setup Complete!' as status;
