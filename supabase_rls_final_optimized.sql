@@ -98,7 +98,7 @@ CREATE POLICY "analytics_final" ON public.analytics
     WITH CHECK (true);
 
 -- =====================================================
--- PERFORMANCE INDEXES (Optimized)
+-- PERFORMANCE INDEXES (Fixed for Supabase)
 -- =====================================================
 
 -- Drop existing indexes if they exist
@@ -108,12 +108,12 @@ DROP INDEX IF EXISTS idx_orders_user_id;
 DROP INDEX IF EXISTS idx_analytics_user_id;
 DROP INDEX IF EXISTS idx_analytics_session_id;
 
--- Create optimized indexes
-CREATE INDEX CONCURRENTLY idx_moments_user_id ON public.moments("userId");
-CREATE INDEX CONCURRENTLY idx_moments_is_public ON public.moments("isPublic");
-CREATE INDEX CONCURRENTLY idx_orders_user_id ON public.orders("userId");
-CREATE INDEX CONCURRENTLY idx_analytics_user_id ON public.analytics("userId");
-CREATE INDEX CONCURRENTLY idx_analytics_session_id ON public.analytics("sessionId");
+-- Create optimized indexes (without CONCURRENTLY for Supabase compatibility)
+CREATE INDEX idx_moments_user_id ON public.moments("userId");
+CREATE INDEX idx_moments_is_public ON public.moments("isPublic");
+CREATE INDEX idx_orders_user_id ON public.orders("userId");
+CREATE INDEX idx_analytics_user_id ON public.analytics("userId");
+CREATE INDEX idx_analytics_session_id ON public.analytics("sessionId");
 
 -- =====================================================
 -- FINAL VERIFICATION
